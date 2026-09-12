@@ -17,14 +17,14 @@
 
 | Mode | Context | Generation | Long-input prefill | Vision | Launcher |
 |---|---|---|---|---|---|
-| **🖼 Vision (daily driver)** | **150K** | **86.2 tok/s** | **1899 tok/s** | ✅ 6.1 s/image | `scripts/start-nvfp4-low.ps1` |
+| **🖼 Vision (daily driver)** | **180K** | **80~87 tok/s** | **1692 tok/s** | ✅ 4.2 s/image | `scripts/start-nvfp4-low.ps1` |
 | 📄 Text-only (long material) | 192K | 79.6 tok/s | — | — | set `$ENABLE_VISION = $false` in script |
 
 **Common basis**: `Qwen3.8-27B-NVFP4-MTP-LOW` (14.47 GiB) · q8_0 KV · MTP n-max 3 · llama.cpp **b10889** · RTX 5090 Laptop 24GB
 
 **Two counter-intuitive findings** (both with full control-group data):
 
-- **150K is the sweet spot** (bigger is NOT better): 36% faster than 152K, only 2K less context
+- **Context ceiling is 180K**: the earlier "152K collapse" was an artifact of the old config (-np 4). With the production config (-np 1), 150K~180K is flat; only 192K truly collapses.
 - **Several "community-recommended" flags are pure regressions on this machine**: `-ub 1024` (−16%), `--spec-default` (−39%), iMatrix mixed quant (−27%) — **someone else's optimum ≠ your optimum**
 
 ![Context sweep](assets/chart5-context-sweep.svg)
@@ -159,10 +159,10 @@ The model is a VLM; the vision component (mmproj) ships separately and can be **
 | 160K + `--ctx-checkpoints 4` | 37.2 tok/s | — | ❌ |
 | 154K | 54.4 tok/s | — | ⚠️ |
 | 152K | 63.6 tok/s | — | ⚠️ cliff onset |
-| **150K + `--ctx-checkpoints 4`** | **86.2 tok/s** | **6.1 s** | ✅ **recommended (sweet spot)** |
+| **180K + `--ctx-checkpoints 4` + `-np 1`** | **80~87 tok/s** | **4.2 s** | ✅ **recommended (new ceiling)** |
 | 148K | 80.4 tok/s | — | ✅ |
 
-> Generation speed degrades non-linearly with context (silent slow-path fallback when VRAM is tight — not an OOM). **A fine sweep found 150K is the peak**: past 152K it collapses (63.6), at 150K it holds 86.2 (≈ text-only level). Recommended: **150K with vision**, 192K for text-only.
+> **Major correction (2026-09-13)**: the earlier "152K/160K collapse" was an artifact of the old config (default -np 4, only 158MB free). Re-measured with the production config (`-np 1`, 1.2GB+ free): **150K~180K is flat** (80~87 tok/s); only 192K collapses (63). **Recommended: 180K with vision** (531MB free, vision 4.2s); 192K for text-only.
 > Full guide + API example: [docs/vision-setup.md](docs/vision-setup.md)
 
 ## 🧠 Reasoning Effort & Budget (added 2026-09-11)
