@@ -192,9 +192,11 @@ The model is a VLM; the vision component (mmproj) ships separately and can be **
 
 **④ Parameter scoreboard**: `--ctx-checkpoints 4` ✅ (+79%) | `--spec-default` ❌ (−39%) | `n-max 8` ❌.
 
+**⑤ xhigh overthinking fix (measured)** — one system-prompt line cuts thinking by **46%** and restores normal content output; `presence_penalty` / 148K / froggeric template all measured ineffective. See **[docs/xhigh-overthinking-fix.md](docs/xhigh-overthinking-fix.md)**.
+
 ![Micro tuning](assets/chart6-micro-tuning.svg)
 
-> Full custom-build log: [docs/custom-build-and-mtp-bug.md](docs/custom-build-and-mtp-bug.md) | Raw data: [data/round2-new-results.md](data/round2-new-results.md)
+> Full custom-build log: [docs/custom-build-and-mtp-bug.md](docs/custom-build-and-mtp-bug.md) | Reproducible recipe: [docs/windows-self-build-recipe.md](docs/windows-self-build-recipe.md) | Raw data: [data/round2-new-results.md](data/round2-new-results.md)
 
 ---
 
