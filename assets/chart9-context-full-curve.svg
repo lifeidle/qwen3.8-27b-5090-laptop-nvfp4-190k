@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" width="960" height="470">
+<rect width="960" height="470" rx="12" fill="#ffffff"/>
+<text x="24" y="34" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="19" font-weight="700" fill="#0f172a">Full Context Sweep — Vision Mode Safe up to 180K, Text up to 190K</text>
+<text x="24" y="56" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12.5" fill="#64748b">Qwen3.8-27B NVFP4-LOW · self-built CUDA 13.3 · -np 1 · 512-token runs · the curve is NON-MONOTONIC (allocation alignment effects)</text>
+<line x1="70" y1="365.0" x2="920" y2="365.0" stroke="#e2e8f0" stroke-width="1"/>
+<text x="62" y="369.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11" fill="#64748b" text-anchor="end">0</text>
+<line x1="70" y1="300.0" x2="920" y2="300.0" stroke="#e2e8f0" stroke-width="1"/>
+<text x="62" y="304.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11" fill="#64748b" text-anchor="end">25</text>
+<line x1="70" y1="235.0" x2="920" y2="235.0" stroke="#e2e8f0" stroke-width="1"/>
+<text x="62" y="239.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11" fill="#64748b" text-anchor="end">50</text>
+<line x1="70" y1="170.0" x2="920" y2="170.0" stroke="#e2e8f0" stroke-width="1"/>
+<text x="62" y="174.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11" fill="#64748b" text-anchor="end">75</text>
+<line x1="70" y1="105.0" x2="920" y2="105.0" stroke="#e2e8f0" stroke-width="1"/>
+<text x="62" y="109.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11" fill="#64748b" text-anchor="end">100</text>
+<rect x="82.4" y="153.4" width="40.5" height="211.6" rx="4" fill="#059669"/>
+<text x="102.7" y="147.4" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">81</text>
+<text x="102.7" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">150K</text>
+<rect x="147.8" y="151.8" width="40.5" height="213.2" rx="4" fill="#059669"/>
+<text x="168.1" y="145.8" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">82</text>
+<text x="168.1" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">152K</text>
+<rect x="213.2" y="139.3" width="40.5" height="225.7" rx="4" fill="#059669"/>
+<text x="233.5" y="133.3" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">87</text>
+<text x="233.5" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">155K</text>
+<rect x="278.6" y="140.1" width="40.5" height="224.9" rx="4" fill="#059669"/>
+<text x="298.8" y="134.1" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">86</text>
+<text x="298.8" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">158K</text>
+<rect x="344.0" y="150.0" width="40.5" height="215.0" rx="4" fill="#059669"/>
+<text x="364.2" y="144.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">83</text>
+<text x="364.2" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">160K</text>
+<rect x="409.3" y="142.2" width="40.5" height="222.8" rx="4" fill="#059669"/>
+<text x="429.6" y="136.2" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">86</text>
+<text x="429.6" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">170K</text>
+<rect x="474.7" y="146.9" width="40.5" height="218.1" rx="4" fill="#059669"/>
+<text x="495.0" y="140.9" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">84</text>
+<text x="495.0" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">180K</text>
+<rect x="540.1" y="211.1" width="40.5" height="153.9" rx="4" fill="#dc2626"/>
+<text x="560.4" y="205.1" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">59</text>
+<text x="560.4" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">182K</text>
+<rect x="605.5" y="206.4" width="40.5" height="158.6" rx="4" fill="#dc2626"/>
+<text x="625.8" y="200.4" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">61</text>
+<text x="625.8" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">184K</text>
+<rect x="670.9" y="203.3" width="40.5" height="161.7" rx="4" fill="#dc2626"/>
+<text x="691.2" y="197.3" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">62</text>
+<text x="691.2" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">186K</text>
+<rect x="736.3" y="153.9" width="40.5" height="211.1" rx="4" fill="#059669"/>
+<text x="756.5" y="147.9" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">81</text>
+<text x="756.5" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">188K</text>
+<rect x="801.7" y="139.6" width="40.5" height="225.4" rx="4" fill="#059669"/>
+<text x="821.9" y="133.6" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">87</text>
+<text x="821.9" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">190K</text>
+<rect x="867.0" y="200.9" width="40.5" height="164.1" rx="4" fill="#dc2626"/>
+<text x="887.3" y="194.9" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">63</text>
+<text x="887.3" y="381.0" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#64748b" text-anchor="middle">192K</text>
+<line x1="495.0" y1="100" x2="495.0" y2="387" stroke="#2563eb" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="495.0" y="93" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#2563eb" text-anchor="middle">vision safe ceiling</text>
+<text x="821.9" y="93" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#d97706" text-anchor="middle">text optimum</text>
+<rect x="527.7" y="102" width="196.2" height="266" fill="#dc2626" opacity="0.06"/>
+<text x="625.8" y="353" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#dc2626" text-anchor="middle">oscillation valley (avoid)</text>
+<text x="24" y="448" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" fill="#64748b">Green = usable (≥75 tok/s), red = valley. Correction: the earlier "152K collapse" was an artifact of the default -np 4 config.</text>
+</svg>
