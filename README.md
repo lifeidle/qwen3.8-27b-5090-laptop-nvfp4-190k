@@ -117,6 +117,8 @@
 
 ## 📊 完整测试结果
 
+> ⚠️ **以下为各轮次的历史测量记录**（保留以展示完整过程）；**当前最优配置与最新数据以顶部 TL;DR 为准**，最新轮次数据见 [data/round3-6-latest.md](data/round3-6-latest.md)。
+
 ### 1️⃣ 上下文容量：KV 量化是关键
 
 ![上下文容量](assets/chart2-context-capacity.svg)
