@@ -1,5 +1,8 @@
 # xhigh 过度思考 / 循环问题 —— 实测有效的解决方案
 
+> **English summary**: Fixing xhigh overthinking — **measured results**. ONE system-prompt line cuts thinking by **46%** and restores content output: *"Think through the problem once, then provide your answer. Do not repeatedly re-verify or second-guess yourself. Keep reasoning concise."* Also usable server-side by injecting the same line into the chat template (`--chat-template-file`), which covers every client automatically. Measured **ineffective**: `presence_penalty 1.0`, 148K context, froggeric v22.5 template. Background: [HF discussion #76](https://huggingface.co/Qwen/Qwen3.8-27B/discussions/76) identifies an SSM-layer scale defect as the root cause (model-level, not settings).
+
+
 > Qwen3.8-27B 在 xhigh 档有已知的"想太多停不下来"问题（官方 HF 讨论 #76 确认为 SSM 层结构缺陷，非设置问题）。本文是**实测验证**的修复方案（2026-09-13）。
 
 ## 🏆 有效方案：加一句系统提示词（思考量 -46%）
