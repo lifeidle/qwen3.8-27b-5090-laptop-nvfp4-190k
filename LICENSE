@@ -1,4 +1,8 @@
-MIT License
+# Licenses
+
+## This repository
+
+### Code — MIT License
 
 Copyright (c) 2026 Qwen3.8-27B 24GB Benchmark contributors
 
@@ -20,8 +24,55 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+### Documentation & data — CC BY 4.0
+
+All documentation (`README.md`, `README_EN.md`, everything under `docs/`),
+measurement data (`data/`) and chart assets (`assets/`) are licensed under the
+Creative Commons Attribution 4.0 International License (CC BY 4.0):
+https://creativecommons.org/licenses/by/4.0/
+
+You may share and adapt this material for any purpose with attribution.
+
 ---
 
-Documentation (README.md, README_EN.md, and data files) is licensed under
-Creative Commons Attribution 4.0 International (CC BY 4.0):
-https://creativecommons.org/licenses/by/4.0/
+## Third-party components
+
+**This repository contains no model weights.** The following components are
+required at runtime and remain under their own licenses:
+
+| Component | License | Source |
+|---|---|---|
+| Qwen3.8-27B model weights | Apache License 2.0 (commercial use permitted) | https://huggingface.co/Qwen/Qwen3.8-27B |
+| Qwen3.8-27B-NVFP4-MTP GGUF (quantized weights) | See the model card | https://huggingface.co/esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF |
+| llama.cpp | MIT License | https://github.com/ggml-org/llama.cpp |
+| NVIDIA CUDA Toolkit | NVIDIA Software License Agreement | https://developer.nvidia.com/cuda-toolkit |
+
+Users are responsible for obtaining these components from their original
+sources and complying with the respective licenses.
+
+---
+
+## Trademarks
+
+NVIDIA, GeForce, RTX and CUDA are trademarks of NVIDIA Corporation. Qwen is a
+trademark of Alibaba Group. llama.cpp belongs to its respective contributors.
+All other trademarks are the property of their respective owners.
+
+This project is an independent community effort and is **not affiliated with,
+endorsed by, or sponsored by** NVIDIA Corporation, Alibaba Group, or the
+llama.cpp project.
+
+---
+
+## Disclaimer
+
+- All performance numbers in this repository were measured on a **single
+  device** (RTX 5090 Laptop 24GB + Ultra 9 275HX). Results will vary with
+  different hardware, drivers, operating-system state, and background load.
+- All configurations and scripts are provided **"as is"**, without warranty of
+  any kind. Use at your own risk.
+- Language-model output can be inaccurate. Do not use it for medical, legal,
+  or financial decisions without human review.
+- You are responsible for complying with the licenses of the model, engine and
+  toolchain you use, as well as with the laws and regulations of your
+  jurisdiction.
