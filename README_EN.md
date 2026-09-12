@@ -6,32 +6,77 @@
 
 [![Model](https://img.shields.io/badge/model-Qwen3.8--27B-7c3aed)](https://huggingface.co/Qwen/Qwen3.8-27B)
 [![Platform](https://img.shields.io/badge/platform-RTX%205090%20Laptop%2024GB-76b900)]()
-[![Throughput](https://img.shields.io/badge/throughput-79.6%20tok%2Fs-d97706)]()
-[![Context](https://img.shields.io/badge/context-192K%20(q8__0%20KV)-2563eb)]()
-[![Engine](https://img.shields.io/badge/llama.cpp-b10889-0ea5e9)](https://github.com/ggml-org/llama.cpp/releases)
+[![Throughput](https://img.shields.io/badge/throughput-80~87%20tok%2Fs-d97706)]()
+[![Context](https://img.shields.io/badge/context-180K%20vision%20%2F%20190K%20text-2563eb)]()
+[![Engine](https://img.shields.io/badge/llama.cpp-self--built%20CUDA%2013.3-0ea5e9)]()
 [![License](https://img.shields.io/badge/license-MIT%20%2B%20CC%20BY%204.0-059669)](#license)
 
 ---
 
 ## 🏆 Final Results (TL;DR — copy these two configs)
 
-| Mode | Context | Generation | Long-input prefill | Vision | Launcher |
-|---|---|---|---|---|---|
-| **🖼 Vision (daily driver)** | **180K** | **80~87 tok/s** | **1692 tok/s** | ✅ 4.2 s/image | `scripts/start-nvfp4-low.ps1` |
-| 📄 Text-only (long material) | 192K | 79.6 tok/s | — | — | set `$ENABLE_VISION = $false` in script |
+| Mode | Context | Generation | Long-input prefill | Vision |
+|---|---|---|---|---|
+| **🖼 Vision (daily driver)** | **180K** | **80~87 tok/s** | **1692 tok/s** | ✅ **4.2 s/image** |
+| 📄 Text-only (long material) | **190K** | 86.7 tok/s | — | — |
 
-**Common basis**: `Qwen3.8-27B-NVFP4-MTP-LOW` (14.47 GiB) · q8_0 KV · MTP n-max 3 · llama.cpp **b10889** · RTX 5090 Laptop 24GB
+**Vision mode · one-line launch** (paste into PowerShell; close the window to stop):
 
-**Two counter-intuitive findings** (both with full control-group data):
+```powershell
+& "D:\llama-custom13\llama-server.exe" -m "D:\models\Qwen3.8-27B-quant-test\Qwen3.8-27B-NVFP4-MTP-LOW.gguf" --mmproj "D:\models\Qwen3.8-27B-quant-test\mmproj-Q8_0.gguf" -ngl 99 -fa on -fit off -c 180000 -np 1 --cache-type-k q8_0 --cache-type-v q8_0 --ctx-checkpoints 4 --spec-type draft-mtp --spec-draft-n-max 3 --reasoning-effort xhigh --reasoning-budget 12000 --chat-template-file "D:\models\Qwen3.8-27B-quant-test\custom_template.jinja" --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 --host 127.0.0.1 --port 8082 --load-mode none --jinja
+```
 
-- **Context ceiling is 180K**: the earlier "152K collapse" was an artifact of the old config (-np 4). With the production config (-np 1), 150K~180K is flat; only 192K truly collapses.
-- **Several "community-recommended" flags are pure regressions on this machine**: `-ub 1024` (−16%), `--spec-default` (−39%), iMatrix mixed quant (−27%) — **someone else's optimum ≠ your optimum**
+> Text-only: drop the `--mmproj "…"` segment and set `-c 190000`. Adjust paths to your setup.
 
-![Context sweep](assets/chart5-context-sweep.svg)
+**Common basis**: NVFP4-MTP-LOW (14.47 GiB) · q8_0 KV · **self-built CUDA 13.3** · RTX 5090 Laptop 24GB
 
-> 📖 Full test log across 14 categories: [docs/](./docs) | Raw data: [data/](./data)
+![Full context curve](assets/chart9-context-full-curve.svg)
+
+![Config evolution](assets/chart10-config-evolution.svg)
+
+## 🎯 10-Second Decision
+
+| Your scenario | Choice |
+|---|---|
+| Daily chat / coding / agents (with vision) | **Vision 180K** (the one-liner above) |
+| Very long text-only material (> 180K) | Text 190K (drop the mmproj segment) |
+| Multiple clients at once | add `-np 2` (~0.1 GB VRAM cost) |
+| Thinking never stops | Already double-fused (budget + template injection) — nothing to do |
+
+**Five counter-intuitive findings** (all with control-group data):
+
+1. **The ceiling is 180K, not 150K** — the earlier "152K collapse" was an artifact of the old config (default `-np 4`, only 158MB free)
+2. **The context-speed curve oscillates** — 182~186K is a valley (59~62 tok/s), 188~190K recovers (81~87) — **avoid the valley**
+3. **Several "community-recommended" flags are regressions here**: `-ub 1024` (−16%), `--spec-default` (−39%), iMatrix mixed quant (−27%)
+4. **Toolchain pairing is a hard red line for self-builds** — nvcc 12.8 + MSVC made MTP prefill 57× slower ([upstream issue #28790](https://github.com/ggml-org/llama.cpp/issues/28790), root-caused and fixed)
+5. **One system-prompt line cures overthinking** — thinking −46%, content restored (`presence_penalty` / fixed template / lower context all measured ineffective)
+
+## 📜 Six Rounds of Tuning
+
+| Round | Theme | Key gain |
+|---|---|---|
+| 1 | **Quant selection** (53 → 1) | NVFP4-LOW wins (fastest, quality tied) |
+| 2 | **KV + MTP tuning** | q8_0 KV (+56% capacity) · MTP n-max 3 (+40% generation) |
+| 3 | **Thinking control** | xhigh fixed: `--reasoning-budget` + template injection |
+| 4 | **Self-built engine** | CUDA 13.3 official pairing: prefill 1692 · upstream bug fixed |
+| 5 | **Context breakthrough** | 150K → 180K (`-np 1` frees 1.15 GB of VRAM) |
+| 6 | **Exhaustive re-check** | 40+ params swept; hardware limit confirmed |
+
+## 📊 Scoreboard (final config, measured)
+
+| Dimension | Value |
+|---|---|
+| Generation | **80~87 tok/s** |
+| Long-input | **1692 tok/s** (4K prefill) · 23K input in 16.9 s |
+| Vision | **4.2 s/image** (Q8 mmproj) |
+| Context | **180K** (vision ceiling) · 190K (text optimum) |
+| VRAM free | 531 MB @ 180K vision |
+| Thermals | 12-minute full load, **zero degradation** |
+| Thinking control | xhigh quality + double fuse (budget 12000 + template injection) |
 
 ![Parameter scoreboard](assets/chart8-parameter-scoreboard.svg)
+
+> 📖 Docs: [docs/](./docs) | Raw data: [data/](./data)
 
 ---
 
