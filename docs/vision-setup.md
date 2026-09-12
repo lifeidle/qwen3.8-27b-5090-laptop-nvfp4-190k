@@ -1,5 +1,8 @@
 # 视觉能力部署指南（Qwen3.8-27B VLM）
 
+> **English summary**: Vision support for Qwen3.8-27B on a 24GB GPU. The mmproj vision component ships separately (888MB BF16) and can be self-quantized to Q8_0 (600MB — lossless in our tests). Key finding: with vision loaded, generation speed vs context is **non-linear** — 192K collapses to 3.9 tok/s, **180K is the safe ceiling** (~80 tok/s, 4.2 s per image, 531MB VRAM free). Includes API examples and known limitations (no FP4 acceleration for the vision tower; seven-segment fonts have OCR ambiguity).
+
+
 > 本文档对应 2026-09-11 的视觉功能实测：从组件量化到「视觉 + 长上下文」的最优平衡点。
 
 ## 一、组件获取与自行量化
