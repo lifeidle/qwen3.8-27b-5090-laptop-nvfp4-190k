@@ -23,7 +23,7 @@
 **视觉模式 · 一行命令启动**（PowerShell 粘贴回车；关闭窗口即停止）：
 
 ```powershell
-& "D:\llama-custom13\llama-server.exe" -m "D:\models\Qwen3.8-27B-quant-test\Qwen3.8-27B-NVFP4-MTP-LOW.gguf" --mmproj "D:\models\Qwen3.8-27B-quant-test\mmproj-Q8_0.gguf" -ngl 99 -fa on -fit off -c 180000 -np 1 --cache-type-k q8_0 --cache-type-v q8_0 --ctx-checkpoints 4 --spec-type draft-mtp --spec-draft-n-max 3 --reasoning-effort xhigh --reasoning-budget 12000 --chat-template-file "D:\models\Qwen3.8-27B-quant-test\custom_template.jinja" --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 --host 127.0.0.1 --port 8082 --load-mode none --jinja
+& "D:\llama.cpp\build\bin\llama-server.exe" -m "D:\models\Qwen3.8-27B\Qwen3.8-27B-NVFP4-MTP-LOW.gguf" --mmproj "D:\models\Qwen3.8-27B\mmproj-Q8_0.gguf" -ngl 99 -fa on -fit off -c 180000 -np 1 --cache-type-k q8_0 --cache-type-v q8_0 --ctx-checkpoints 4 --spec-type draft-mtp --spec-draft-n-max 3 --reasoning-effort xhigh --reasoning-budget 12000 --chat-template-file "D:\models\Qwen3.8-27B\custom_template.jinja" --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 --host 127.0.0.1 --port 8082 --load-mode none --jinja
 ```
 
 > 纯文本模式：删掉 `--mmproj "…"` 段，`-c 180000` 改 `-c 190000`。路径按你的实际位置修改。
@@ -383,9 +383,38 @@ curl http://127.0.0.1:8082/health     # 期望 {"status":"ok"}
 - 测试时间：2026 年 9 月 · 平台：RTX 5090 Laptop 24GB · Windows 11 · llama.cpp b10840 / b10889
 - 原始散热数据（100 轮）与全部速度数据见 [`data/`](./data)
 
-## 许可
+## 许可与法律
 
-- 文档：CC BY 4.0 ｜ 脚本：MIT（详见 [LICENSE](./LICENSE)）
+### 本仓库
+
+| 内容 | 许可 |
+|---|---|
+| 脚本代码（`scripts/`、`tools/`）| **MIT License** |
+| 文档与数据（README、`docs/`、`data/`、图表）| **CC BY 4.0** |
+
+完整条款见 [LICENSE](./LICENSE)。可自由使用、修改、分发；引用或转载本仓库的数据与结论请注明出处。
+
+### 第三方组件（本仓库不含任何模型权重）
+
+| 组件 | 许可 | 来源 |
+|---|---|---|
+| Qwen3.8-27B 模型权重 | **Apache 2.0**（允许商用）| [Qwen 官方](https://huggingface.co/Qwen/Qwen3.8-27B) |
+| NVFP4-MTP GGUF（量化权重）| 见其模型卡 | [esatapedico](https://huggingface.co/esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF) |
+| llama.cpp | MIT | [ggml-org](https://github.com/ggml-org/llama.cpp) |
+| NVIDIA CUDA Toolkit | NVIDIA 软件许可协议 | NVIDIA 官网 |
+
+使用者需自行从原始来源获取上述组件，并遵守各自许可。
+
+### 免责声明
+
+- 本仓库全部性能数据基于**单台设备**（RTX 5090 Laptop 24GB + Ultra 9 275HX）实测——不同硬件、驱动、系统状态下结果会有差异
+- 所有配置与脚本按"**现状**"提供，不构成任何形式的保证；使用风险自负
+- 模型输出可能包含错误信息，**不应未经人工审核用于医疗、法律、金融等专业决策**
+- 请遵守所用模型/引擎的原始许可及所在地区的法律法规
+
+### 商标声明
+
+NVIDIA、GeForce、RTX、CUDA 是 NVIDIA Corporation 的商标；Qwen 是阿里巴巴集团的商标。本项目为独立社区工作，与上述公司**无隶属、背书或合作关系**。
 - 模型权重遵循上游许可（Qwen3.8-27B 系列为 Apache-2.0）
 
 ## 致谢
