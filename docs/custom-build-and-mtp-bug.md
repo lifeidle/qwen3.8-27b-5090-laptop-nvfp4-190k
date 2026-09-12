@@ -1,5 +1,8 @@
 # 自编译实录：从编译成功到发现 MTP prefill bug
 
+> **English summary**: Self-building llama.cpp on Windows (MSVC + Ninja + CUDA). Four pitfalls and their fixes, including PCH breaking DLL linking (`LNK2001` on `exports.def`). Main finding: an **nvcc 12.8 + MSVC 19.44** build (an unsupported pairing needing `-allow-unsupported-compiler`) made MTP prefill **57× slower** (32.7 vs 1860 tok/s) while decode stayed healthy. Root-caused by DLL-swap bisection (swap official ggml-cuda.dll → instant fix) and filed upstream as [ggml-org/llama.cpp#28790](https://github.com/ggml-org/llama.cpp/issues/28790).
+
+
 > 2026-09-12 完整记录：为什么要自己编译、踩了哪些坑、发现了什么、结论是什么。
 > **上游 issue 已提交：ggml-org/llama.cpp#28790**
 
