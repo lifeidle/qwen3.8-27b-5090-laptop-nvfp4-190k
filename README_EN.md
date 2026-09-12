@@ -23,7 +23,7 @@
 **Vision mode · one-line launch** (paste into PowerShell; close the window to stop):
 
 ```powershell
-& "D:\llama-custom13\llama-server.exe" -m "D:\models\Qwen3.8-27B-quant-test\Qwen3.8-27B-NVFP4-MTP-LOW.gguf" --mmproj "D:\models\Qwen3.8-27B-quant-test\mmproj-Q8_0.gguf" -ngl 99 -fa on -fit off -c 180000 -np 1 --cache-type-k q8_0 --cache-type-v q8_0 --ctx-checkpoints 4 --spec-type draft-mtp --spec-draft-n-max 3 --reasoning-effort xhigh --reasoning-budget 12000 --chat-template-file "D:\models\Qwen3.8-27B-quant-test\custom_template.jinja" --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 --host 127.0.0.1 --port 8082 --load-mode none --jinja
+& "D:\llama.cpp\build\bin\llama-server.exe" -m "D:\models\Qwen3.8-27B\Qwen3.8-27B-NVFP4-MTP-LOW.gguf" --mmproj "D:\models\Qwen3.8-27B\mmproj-Q8_0.gguf" -ngl 99 -fa on -fit off -c 180000 -np 1 --cache-type-k q8_0 --cache-type-v q8_0 --ctx-checkpoints 4 --spec-type draft-mtp --spec-draft-n-max 3 --reasoning-effort xhigh --reasoning-budget 12000 --chat-template-file "D:\models\Qwen3.8-27B\custom_template.jinja" --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 --host 127.0.0.1 --port 8082 --load-mode none --jinja
 ```
 
 > Text-only: drop the `--mmproj "…"` segment and set `-c 190000`. Adjust paths to your setup.
@@ -383,9 +383,38 @@ curl http://127.0.0.1:8082/health     # expect {"status":"ok"}
 - Tested September 2026 · RTX 5090 Laptop 24GB · Windows 11 · llama.cpp b10840 / b10889
 - Raw thermal data (100 rounds) and all speed data are in [`data/`](./data)
 
-## License
+## License & Legal
 
-- Documentation: CC BY 4.0 ｜ Scripts: MIT (see [LICENSE](./LICENSE))
+### This repository
+
+| Content | License |
+|---|---|
+| Scripts (`scripts/`, `tools/`) | **MIT License** |
+| Documentation & data (READMEs, `docs/`, `data/`, charts) | **CC BY 4.0** |
+
+Full terms in [LICENSE](./LICENSE). Free to use, modify and redistribute; please credit this repository when reusing its data or conclusions.
+
+### Third-party components (this repository contains NO model weights)
+
+| Component | License | Source |
+|---|---|---|
+| Qwen3.8-27B model weights | **Apache 2.0** (commercial use permitted) | [Qwen official](https://huggingface.co/Qwen/Qwen3.8-27B) |
+| NVFP4-MTP GGUF (quantized weights) | See its model card | [esatapedico](https://huggingface.co/esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF) |
+| llama.cpp | MIT | [ggml-org](https://github.com/ggml-org/llama.cpp) |
+| NVIDIA CUDA Toolkit | NVIDIA Software License Agreement | NVIDIA website |
+
+Users must obtain these components from their original sources and comply with their respective licenses.
+
+### Disclaimer
+
+- All performance numbers were measured on a **single device** (RTX 5090 Laptop 24GB + Ultra 9 275HX). Results vary with hardware, drivers and system state.
+- All configurations and scripts are provided **"as is"**, without warranty of any kind. Use at your own risk.
+- Model output can be inaccurate and **must not be used for medical, legal or financial decisions without human review**.
+- You are responsible for complying with the licenses of the model/engine you use and with your local laws and regulations.
+
+### Trademarks
+
+NVIDIA, GeForce, RTX and CUDA are trademarks of NVIDIA Corporation. Qwen is a trademark of Alibaba Group. This is an independent community project, **not affiliated with, endorsed by, or sponsored by** any of these entities.
 - Model weights follow upstream licenses (Qwen3.8-27B family is Apache-2.0)
 
 ## Acknowledgements
