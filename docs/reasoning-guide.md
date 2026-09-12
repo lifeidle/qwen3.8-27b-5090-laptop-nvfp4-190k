@@ -1,5 +1,8 @@
 # 思考档位（reasoning_effort）完整指南
 
+> **English summary**: Qwen3.8 `reasoning_effort` levels measured. The default `xhigh` can burn the entire token budget on thinking with **zero content output** (22,021 thinking chars, finish=length). `reasoning_budget_tokens` MUST be a **top-level request field** — it is silently ignored inside `chat_template_kwargs`. Measured: medium = 37s / 826 thinking chars; xhigh no-budget = 114s / 22k chars / no content. Recommended: `medium`, or `xhigh` + top-level budget 3000–5000 with max_tokens ≥ 16000.
+
+
 > Qwen3.8 默认思考档是 **xhigh**，在 API 场景下是陷阱。本文是全部三档 + 预算参数的实测报告（2026-09-11）。
 
 ## 一、档位定义（从模型的 chat template 源码确认）
