@@ -192,9 +192,11 @@
 
 **④ 参数红榜**：`--ctx-checkpoints 4` ✅ 有效（+79%）｜ `--spec-default` ❌ 负优化（−39%）｜ `n-max 8` ❌ 负优化。
 
+**⑤ xhigh 过度思考的解法（实测）** —— 一句系统提示词让思考量直降 **46%**、正文从零恢复正常；`presence_penalty` / 148K / froggeric 模板均实测无效。详见 **[docs/xhigh-overthinking-fix.md](docs/xhigh-overthinking-fix.md)**。
+
 ![微调测试](assets/chart6-micro-tuning.svg)
 
-> 自编译完整记录（四个坑 + 排查过程）：[docs/custom-build-and-mtp-bug.md](docs/custom-build-and-mtp-bug.md) ｜ 全部原始数据：[data/round2-new-results.md](data/round2-new-results.md)
+> 自编译完整记录（四个坑 + 排查过程）：[docs/custom-build-and-mtp-bug.md](docs/custom-build-and-mtp-bug.md) ｜ 可复现配方：[docs/windows-self-build-recipe.md](docs/windows-self-build-recipe.md) ｜ 全部原始数据：[data/round2-new-results.md](data/round2-new-results.md)
 
 ---
 
