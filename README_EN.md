@@ -117,6 +117,8 @@
 
 ## 📊 Full Test Results
 
+> ⚠️ **The sections below are historical measurement records** from each round (kept to show the full process). For the **current optimal config and latest data, see the TL;DR at the top**; newest round data: [data/round3-6-latest.md](data/round3-6-latest.md).
+
 ### 1️⃣ Context capacity: KV quantization is the lever
 
 ![Context capacity](assets/chart2-context-capacity.svg)
