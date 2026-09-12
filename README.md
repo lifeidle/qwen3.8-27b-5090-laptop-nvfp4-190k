@@ -6,32 +6,77 @@
 
 [![Model](https://img.shields.io/badge/model-Qwen3.8--27B-7c3aed)](https://huggingface.co/Qwen/Qwen3.8-27B)
 [![Platform](https://img.shields.io/badge/platform-RTX%205090%20Laptop%2024GB-76b900)]()
-[![Throughput](https://img.shields.io/badge/throughput-79.6%20tok%2Fs-d97706)]()
-[![Context](https://img.shields.io/badge/context-192K%20(q8__0%20KV)-2563eb)]()
-[![Engine](https://img.shields.io/badge/llama.cpp-b10889-0ea5e9)](https://github.com/ggml-org/llama.cpp/releases)
+[![Throughput](https://img.shields.io/badge/throughput-80~87%20tok%2Fs-d97706)]()
+[![Context](https://img.shields.io/badge/context-180K%20vision%20%2F%20190K%20text-2563eb)]()
+[![Engine](https://img.shields.io/badge/llama.cpp-self--built%20CUDA%2013.3-0ea5e9)]()
 [![License](https://img.shields.io/badge/license-MIT%20%2B%20CC%20BY%204.0-059669)](#许可)
 
 ---
 
-## 🏆 最终结论（TL;DR — 照抄这两个配置即可）
+## 🏆 最终结论（TL;DR — 照抄这两个配置）
 
-| 模式 | 上下文 | 生成速度 | 长文本处理 | 视觉识别 | 启动脚本 |
-|---|---|---|---|---|---|
-| **🖼 视觉模式（日常主力）** | **180K** | **80~87 tok/s** | **1692 tok/s** | ✅ 4.2 秒/张 | `scripts/start-nvfp4-low.ps1` |
-| 📄 纯文本模式（超长材料）| 192K | 79.6 tok/s | — | — | 脚本内 `$ENABLE_VISION = $false` |
+| 模式 | 上下文 | 生成速度 | 长文本处理 | 视觉识别 |
+|---|---|---|---|---|
+| **🖼 视觉模式（日常主力）** | **180K** | **80~87 tok/s** | **1692 tok/s** | ✅ **4.2 秒/张** |
+| 📄 纯文本模式（超长材料）| **190K** | 86.7 tok/s | — | — |
 
-**统一底座**：`Qwen3.8-27B-NVFP4-MTP-LOW`（14.47 GiB）· q8_0 KV · MTP n-max 3 · llama.cpp **b10889** · RTX 5090 Laptop 24GB
+**视觉模式 · 一行命令启动**（PowerShell 粘贴回车；关闭窗口即停止）：
 
-**两个反直觉发现**（都有完整对照组数据）：
+```powershell
+& "D:\llama-custom13\llama-server.exe" -m "D:\models\Qwen3.8-27B-quant-test\Qwen3.8-27B-NVFP4-MTP-LOW.gguf" --mmproj "D:\models\Qwen3.8-27B-quant-test\mmproj-Q8_0.gguf" -ngl 99 -fa on -fit off -c 180000 -np 1 --cache-type-k q8_0 --cache-type-v q8_0 --ctx-checkpoints 4 --spec-type draft-mtp --spec-draft-n-max 3 --reasoning-effort xhigh --reasoning-budget 12000 --chat-template-file "D:\models\Qwen3.8-27B-quant-test\custom_template.jinja" --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 --host 127.0.0.1 --port 8082 --load-mode none --jinja
+```
 
-- **上下文上限 180K**：早期"152K 滑坡"是旧配置（-np 4）的测量假象；生产配置（-np 1）下 150K~180K 全平坦，192K 才真滑坡
-- **多个"社区推荐"参数在本机全是负优化**：`-ub 1024`（−16%）、`--spec-default`（−39%）、iMatrix 混合量化（−27%）——**别人的最优 ≠ 你的最优**
+> 纯文本模式：删掉 `--mmproj "…"` 段，`-c 180000` 改 `-c 190000`。路径按你的实际位置修改。
 
-![上下文细扫](assets/chart5-context-sweep.svg)
+**统一底座**：NVFP4-MTP-LOW（14.47 GiB）· q8_0 KV · **自编译 CUDA 13.3** · RTX 5090 Laptop 24GB
 
-> 📖 14 大类完整测试过程：[docs/](./docs) ｜ 原始数据：[data/](./data)
+![上下文完整曲线](assets/chart9-context-full-curve.svg)
+
+![配置演进](assets/chart10-config-evolution.svg)
+
+## 🎯 10 秒决策
+
+| 你的场景 | 选择 |
+|---|---|
+| 日常对话 / 编码 / agent（要视觉）| **视觉模式 180K**（上面一行命令）|
+| 超长纯文本材料（> 180K）| 纯文本 190K（去掉 mmproj 段）|
+| 多客户端同时连接 | 加 `-np 2`（牺牲约 0.1 GB 显存）|
+| 思考停不下来 | 已内置双保险（budget + 模板注入），无需操作 |
+
+**五个反直觉发现**（全部有对照组数据）：
+
+1. **上下文上限是 180K，不是 150K** —— 早期"152K 滑坡"是旧配置（默认 `-np 4`，显存只剩 158MB）的测量假象
+2. **上下文-速度曲线是震荡的** —— 182~186K 是低谷（59~62 tok/s），188~190K 回升（81~87）——**避开低谷区**
+3. **一堆"社区推荐"参数在本机是负优化**：`-ub 1024`（−16%）、`--spec-default`（−39%）、iMatrix 混合量化（−27%）
+4. **自编译的工具链配对是硬红线** —— nvcc 12.8 + MSVC 让 MTP prefill 慢 57 倍（[上游 issue #28790](https://github.com/ggml-org/llama.cpp/issues/28790)，已定位并修复）
+5. **一句系统提示词治好过度思考** —— 思考量 −46%、正文恢复输出（`presence_penalty` / 修复模板 / 降上下文均实测无效）
+
+## 📜 六轮调优历程
+
+| 轮次 | 主题 | 关键收获 |
+|---|---|---|
+| 1 | **量化选型**（53 → 1）| NVFP4-LOW 胜出（速度双冠、质量打平）|
+| 2 | **KV + MTP 调优** | q8_0 KV（容量 +56%）· MTP n-max 3（生成 +40%）|
+| 3 | **思考控制** | xhigh 修复：`--reasoning-budget` + 模板注入 |
+| 4 | **自编译引擎** | CUDA 13.3 官方配对：prefill 1692 · 修复上游 bug |
+| 5 | **上下文突破** | 150K → 180K（发现 `-np 1` 释放 1.15 GB 显存）|
+| 6 | **穷尽复查** | 40+ 参数全排查，确认到达当前硬件极限 |
+
+## 📊 成绩单（最终配置实测）
+
+| 维度 | 数值 |
+|---|---|
+| 生成速度 | **80~87 tok/s** |
+| 长文本处理 | **1692 tok/s**（4K prefill）· 23K 输入仅 16.9 秒 |
+| 视觉识别 | **4.2 秒/张**（Q8 量化 mmproj）|
+| 上下文 | **180K**（视觉安全上限）· 190K（文本最优）|
+| 显存余量 | 531 MB @ 180K（视觉模式）|
+| 散热 | 12 分钟满载**零衰减** |
+| 思考控制 | xhigh 质量档 + 双保险（budget 12000 + 模板注入）|
 
 ![参数红黑榜](assets/chart8-parameter-scoreboard.svg)
+
+> 📖 详细文档：[docs/](./docs) ｜ 原始数据：[data/](./data)
 
 ---
 
