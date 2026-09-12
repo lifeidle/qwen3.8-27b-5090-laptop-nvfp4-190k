@@ -1,5 +1,7 @@
 # Windows 自编译完整配方（CUDA 13.3 + MSVC + Blackwell/sm_120）
 
+> **English full version**: [windows-self-build-recipe.en.md](./windows-self-build-recipe.en.md)
+
 > 2026-09 全程实战验证。目标：从源码构建 llama.cpp，性能 **≥ 官方构建**。
 > 实测结果：自编译版在 RTX 5090 Laptop 24GB 上跑 Qwen3.8-27B NVFP4，**decode 75.3 tok/s / prefill 23K=1405 tok/s / 视觉 4.5s**——综合优于官方 b10889。
 > 相关上游 issue（发现了 nvcc 12.8 的性能 bug）：[ggml-org/llama.cpp#28790](https://github.com/ggml-org/llama.cpp/issues/28790)
