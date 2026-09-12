@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420">
+<rect width="960" height="420" rx="12" fill="#ffffff"/>
+<text x="24" y="34" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="19" font-weight="700" fill="#0f172a">Final Config Evolution — Where the Gains Came From</text>
+<text x="24" y="56" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12.5" fill="#64748b">RTX 5090 Laptop 24GB · Qwen3.8-27B NVFP4 · start of tuning → today</text>
+<text x="286" y="122" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12.5" fill="#0f172a" text-anchor="end">Context (vision mode)</text>
+<rect x="300" y="108" width="46" height="20" rx="4" fill="#94a3b8"/>
+<text x="323" y="122" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">150K</text>
+<path d="M 354 118 l 14 0 m -5 -5 l 5 5 l -5 5" stroke="#64748b" stroke-width="1.6" fill="none"/>
+<rect x="378" y="108" width="100" height="20" rx="4" fill="#059669"/>
+<text x="428.0" y="122" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">180K</text>
+<text x="286" y="168" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12.5" fill="#0f172a" text-anchor="end">Decode (tok/s, mid-range)</text>
+<rect x="300" y="154" width="46" height="20" rx="4" fill="#94a3b8"/>
+<text x="323" y="168" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">79.6</text>
+<path d="M 354 164 l 14 0 m -5 -5 l 5 5 l -5 5" stroke="#64748b" stroke-width="1.6" fill="none"/>
+<rect x="378" y="154" width="100" height="20" rx="4" fill="#059669"/>
+<text x="428.0" y="168" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">83.9</text>
+<text x="286" y="214" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12.5" fill="#0f172a" text-anchor="end">Prefill 4K (tok/s)</text>
+<rect x="300" y="200" width="46" height="20" rx="4" fill="#94a3b8"/>
+<text x="323" y="214" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">1482</text>
+<path d="M 354 210 l 14 0 m -5 -5 l 5 5 l -5 5" stroke="#64748b" stroke-width="1.6" fill="none"/>
+<rect x="378" y="200" width="100" height="20" rx="4" fill="#059669"/>
+<text x="428.0" y="214" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">1692</text>
+<text x="286" y="260" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12.5" fill="#0f172a" text-anchor="end">Vision latency (s)</text>
+<rect x="300" y="246" width="46" height="20" rx="4" fill="#94a3b8"/>
+<text x="323" y="260" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">6.1s</text>
+<path d="M 354 256 l 14 0 m -5 -5 l 5 5 l -5 5" stroke="#64748b" stroke-width="1.6" fill="none"/>
+<rect x="378" y="246" width="100" height="20" rx="4" fill="#059669"/>
+<text x="428.0" y="260" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">4.2s</text>
+<text x="286" y="306" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12.5" fill="#0f172a" text-anchor="end">Thinking control</text>
+<rect x="300" y="292" width="46" height="20" rx="4" fill="#94a3b8"/>
+<text x="323" y="306" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">no</text>
+<path d="M 354 302 l 14 0 m -5 -5 l 5 5 l -5 5" stroke="#64748b" stroke-width="1.6" fill="none"/>
+<rect x="378" y="292" width="100" height="20" rx="4" fill="#059669"/>
+<text x="428.0" y="306" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">budget+template</text>
+<text x="286" y="352" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12.5" fill="#0f172a" text-anchor="end">Engine</text>
+<rect x="300" y="338" width="46" height="20" rx="4" fill="#94a3b8"/>
+<text x="323" y="352" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">official</text>
+<path d="M 354 348 l 14 0 m -5 -5 l 5 5 l -5 5" stroke="#64748b" stroke-width="1.6" fill="none"/>
+<rect x="378" y="338" width="100" height="20" rx="4" fill="#059669"/>
+<text x="428.0" y="352" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" fill="#ffffff" text-anchor="middle">self-built 13.3</text>
+<text x="24" y="398" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" fill="#64748b">Gray = starting point, green = today. The biggest single win: removing the default -np 4 (freed 1.15GB VRAM → +30K context).</text>
+</svg>
