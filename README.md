@@ -30,6 +30,17 @@
 
 **统一底座**：NVFP4-MTP-LOW（14.47 GiB）· q8_0 KV · **自编译 CUDA 13.3** · RTX 5090 Laptop 24GB
 
+### 📦 需要下载的三件套
+
+| 文件 | 大小 | 获取地址 |
+|---|---|---|
+| **Qwen3.8-27B-NVFP4-MTP-LOW.gguf**（主力模型）| 14.47 GiB | [**esatapedico / Qwen3.8-27B-NVFP4-MTP-GGUF**](https://huggingface.co/esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF) → 选 **`LOW`** 档 |
+| **mmproj-BF16.gguf**（视觉组件）| 888 MB | [Qwen / Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B) 官方仓库（可自行量化到 Q8_0 省 288 MB → [视觉配置指南](docs/vision-setup.md)）|
+| **llama.cpp 引擎** | ~35 MB | [官方 CUDA 发布包](https://github.com/ggml-org/llama.cpp/releases)（或按[自编译配方](docs/windows-self-build-recipe.md)获得本仓库同款性能）|
+
+> 🧩 **防过度思考模板**（`custom_template.jinja`）已包含在本仓库 → [scripts/custom_template.jinja](scripts/custom_template.jinja)
+> 🌐 **国内加速**：把下载地址里的 `huggingface.co` 换成 `hf-mirror.com` 即可。
+
 ![上下文完整曲线](assets/chart9-context-full-curve.svg)
 
 ![配置演进](assets/chart10-config-evolution.svg)
