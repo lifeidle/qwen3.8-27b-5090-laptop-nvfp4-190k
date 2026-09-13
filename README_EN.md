@@ -30,6 +30,17 @@
 
 **Common basis**: NVFP4-MTP-LOW (14.47 GiB) · q8_0 KV · **self-built CUDA 13.3** · RTX 5090 Laptop 24GB
 
+### 📦 What to download (3 pieces)
+
+| File | Size | Where |
+|---|---|---|
+| **Qwen3.8-27B-NVFP4-MTP-LOW.gguf** (main model) | 14.47 GiB | [**esatapedico / Qwen3.8-27B-NVFP4-MTP-GGUF**](https://huggingface.co/esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF) → pick the **`LOW`** tier |
+| **mmproj-BF16.gguf** (vision component) | 888 MB | [Qwen / Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B) official repo (optionally self-quantize to Q8_0 to save 288 MB → [vision setup](docs/vision-setup.md)) |
+| **llama.cpp engine** | ~35 MB | [official CUDA release](https://github.com/ggml-org/llama.cpp/releases) (or follow the [self-build recipe](docs/windows-self-build-recipe.en.md) for this repo's performance) |
+
+> 🧩 **Anti-overthinking template** (`custom_template.jinja`) ships with this repo → [scripts/custom_template.jinja](scripts/custom_template.jinja)
+> 🌐 **China acceleration**: replace `huggingface.co` with `hf-mirror.com` in the download URLs.
+
 ![Full context curve](assets/chart9-context-full-curve.svg)
 
 ![Config evolution](assets/chart10-config-evolution.svg)
