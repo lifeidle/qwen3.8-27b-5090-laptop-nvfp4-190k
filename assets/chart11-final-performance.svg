@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="1000" height="560">
+<rect width="1000" height="560" rx="12" fill="#ffffff"/>
+<text x="26" y="36" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="20" font-weight="700" fill="#0f172a">Final Performance — Qwen3.8-27B on RTX 5090 Laptop 24GB</text>
+<text x="26" y="58" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="12.5" fill="#64748b">Production config: NVFP4-MTP-LOW · self-built CUDA 13.3 · 262K context · q4_0 KV · MTP n-max 3 · vision ON · -np 1</text>
+<rect x="26" y="76" width="222" height="104" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="42" y="126" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="34" font-weight="700" fill="#059669">81.8</text>
+<text x="126" y="126" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="14" fill="#64748b">tok/s</text>
+<text x="42" y="152" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" fill="#64748b">generation (median of 8)</text>
+<rect x="266" y="76" width="222" height="104" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="282" y="126" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="34" font-weight="700" fill="#2563eb">0.17</text>
+<text x="366" y="126" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="14" fill="#64748b">s</text>
+<text x="282" y="152" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" fill="#64748b">time to first token (short)</text>
+<rect x="506" y="76" width="222" height="104" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="522" y="126" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="34" font-weight="700" fill="#d97706">2.9</text>
+<text x="585" y="126" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="14" fill="#64748b">s</text>
+<text x="522" y="152" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" fill="#64748b">per image (vision)</text>
+<rect x="746" y="76" width="222" height="104" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="762" y="126" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="34" font-weight="700" fill="#0f172a">262K</text>
+<text x="846" y="126" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="14" fill="#64748b">ctx</text>
+<text x="762" y="152" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" fill="#64748b">hard ceiling (model)</text>
+<text x="26" y="222" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a">Generation stability — 8 consecutive 512-token runs</text>
+<line x1="60" y1="400" x2="440" y2="400" stroke="#e2e8f0"/>
+<text x="52" y="404" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="end">0</text>
+<line x1="60" y1="362" x2="440" y2="362" stroke="#e2e8f0"/>
+<text x="52" y="366" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="end">25</text>
+<line x1="60" y1="325" x2="440" y2="325" stroke="#e2e8f0"/>
+<text x="52" y="329" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="end">50</text>
+<line x1="60" y1="288" x2="440" y2="288" stroke="#e2e8f0"/>
+<text x="52" y="292" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="end">75</text>
+<line x1="60" y1="250" x2="440" y2="250" stroke="#e2e8f0"/>
+<text x="52" y="254" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="end">100</text>
+<rect x="71" y="282" width="26" height="118" rx="3" fill="#059669"/>
+<text x="84" y="276" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="9.5" fill="#0f172a" text-anchor="middle">79</text>
+<rect x="118" y="278" width="26" height="122" rx="3" fill="#059669"/>
+<text x="131" y="273" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="9.5" fill="#0f172a" text-anchor="middle">82</text>
+<rect x="166" y="273" width="26" height="127" rx="3" fill="#059669"/>
+<text x="179" y="268" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="9.5" fill="#0f172a" text-anchor="middle">85</text>
+<rect x="213" y="277" width="26" height="123" rx="3" fill="#059669"/>
+<text x="226" y="272" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="9.5" fill="#0f172a" text-anchor="middle">82</text>
+<rect x="261" y="265" width="26" height="135" rx="3" fill="#059669"/>
+<text x="274" y="260" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="9.5" fill="#0f172a" text-anchor="middle">90</text>
+<rect x="308" y="278" width="26" height="122" rx="3" fill="#059669"/>
+<text x="321" y="273" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="9.5" fill="#0f172a" text-anchor="middle">82</text>
+<rect x="356" y="274" width="26" height="126" rx="3" fill="#059669"/>
+<text x="369" y="269" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="9.5" fill="#0f172a" text-anchor="middle">84</text>
+<rect x="403" y="278" width="26" height="122" rx="3" fill="#059669"/>
+<text x="416" y="273" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="9.5" fill="#0f172a" text-anchor="middle">81</text>
+<line x1="60" y1="277" x2="440" y2="277" stroke="#2563eb" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="446" y="281" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#2563eb">med 81.8</text>
+<text x="530" y="222" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a">Time to first token vs prompt size</text>
+<line x1="580" y1="400" x2="960" y2="400" stroke="#e2e8f0"/>
+<text x="572" y="404" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="end">0s</text>
+<line x1="580" y1="362" x2="960" y2="362" stroke="#e2e8f0"/>
+<text x="572" y="366" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="end">8s</text>
+<line x1="580" y1="325" x2="960" y2="325" stroke="#e2e8f0"/>
+<text x="572" y="329" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="end">17s</text>
+<line x1="580" y1="288" x2="960" y2="288" stroke="#e2e8f0"/>
+<text x="572" y="292" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="end">26s</text>
+<line x1="580" y1="250" x2="960" y2="250" stroke="#e2e8f0"/>
+<text x="572" y="254" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="end">35s</text>
+<path d="M 581 399 L 622 388 L 923 267" stroke="#d97706" stroke-width="2.5" fill="none"/>
+<circle cx="581" cy="399" r="5" fill="#d97706"/>
+<text x="581" y="388" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" font-weight="700" fill="#0f172a" text-anchor="middle">0.17s</text>
+<text x="581" y="416" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="middle">0K tok</text>
+<circle cx="622" cy="388" r="5" fill="#d97706"/>
+<text x="622" y="377" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" font-weight="700" fill="#0f172a" text-anchor="middle">2.8s</text>
+<text x="622" y="416" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="middle">5K tok</text>
+<circle cx="923" cy="267" r="5" fill="#d97706"/>
+<text x="923" y="256" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10.5" font-weight="700" fill="#0f172a" text-anchor="middle">31.0s</text>
+<text x="923" y="416" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="10" fill="#64748b" text-anchor="middle">45K tok</text>
+<text x="26" y="520" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" fill="#64748b">Loaded-context (137,944 tokens) prefill: 186 s (742 tok/s) · generation at full load: 29.5 tok/s · prefill 4K: 1992 tok/s</text>
+<text x="26" y="540" font-family="-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="11.5" fill="#64748b">Vision latency 2.9 s (median of 3) · VRAM free at idle: 551 MB · model load: 6.6 s (warm cache)</text>
+</svg>
