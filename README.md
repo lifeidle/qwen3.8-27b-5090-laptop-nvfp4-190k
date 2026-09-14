@@ -13,22 +13,26 @@
 
 ---
 
-## 🏆 最终结论（TL;DR — 照抄这两个配置）
+## 🏆 最终结论（TL;DR — 直接照抄）
 
-| 模式 | 上下文 | 生成速度 | 长文本处理 | 视觉识别 |
-|---|---|---|---|---|
-| **🖼 视觉模式（日常主力）** | **180K** | **80~87 tok/s** | **1692 tok/s** | ✅ **4.2 秒/张** |
-| 📄 纯文本模式（超长材料）| **190K** | 86.7 tok/s | — | — |
+| 维度 | 结果 |
+|---|---|
+| **生成速度** | **81.8 tok/s**（8 轮中位，波动 ±4%）|
+| **首 token 延迟** | **0.17 秒**（短问）· 2.8 秒（4K 材料）· 31 秒（45K 材料）|
+| **上下文** | **262,144**（模型硬上限，已实测验证）|
+| **视觉** | ✅ 开启，**2.9 秒/张** |
+| **满载生成** | 29.5 tok/s（装载 13.8 万 tokens 后）|
+| **装载速度** | 1992 tok/s（4K prefill）|
 
-**视觉模式 · 一行命令启动**（PowerShell 粘贴回车；关闭窗口即停止）：
+**一行命令启动**（PowerShell 粘贴回车；关闭窗口即停止）：
 
 ```powershell
-& "D:\llama.cpp\build\bin\llama-server.exe" -m "D:\models\Qwen3.8-27B\Qwen3.8-27B-NVFP4-MTP-LOW.gguf" --mmproj "D:\models\Qwen3.8-27B\mmproj-Q8_0.gguf" -ngl 99 -fa on -fit off -c 180000 -np 1 --cache-type-k q8_0 --cache-type-v q8_0 --ctx-checkpoints 4 --spec-type draft-mtp --spec-draft-n-max 3 --reasoning-effort xhigh --reasoning-budget 12000 --chat-template-file "D:\models\Qwen3.8-27B\custom_template.jinja" --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 --host 127.0.0.1 --port 8082 --load-mode none --jinja
+& "D:\llama.cpp\build\bin\llama-server.exe" -m "D:\models\Qwen3.8-27B\Qwen3.8-27B-NVFP4-MTP-LOW.gguf" --mmproj "D:\models\Qwen3.8-27B\mmproj-Q8_0.gguf" -ngl 99 -fa on -fit off -c 262144 -np 1 --cache-type-k q4_0 --cache-type-v q4_0 --ctx-checkpoints 4 --spec-type draft-mtp --spec-draft-n-max 3 --reasoning-effort xhigh --reasoning-budget 12000 --chat-template-file "D:\models\Qwen3.8-27B\custom_template.jinja" --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 --host 127.0.0.1 --port 8082 --load-mode none --jinja
 ```
 
-> 纯文本模式：删掉 `--mmproj "…"` 段，`-c 180000` 改 `-c 190000`。路径按你的实际位置修改。
+**统一底座**：NVFP4-MTP-LOW（14.47 GiB）· **q4_0 KV** · 自编译 CUDA 13.3 · RTX 5090 Laptop 24GB
 
-**统一底座**：NVFP4-MTP-LOW（14.47 GiB）· q8_0 KV · **自编译 CUDA 13.3** · RTX 5090 Laptop 24GB
+![最终性能画像](assets/chart11-final-performance.svg)
 
 ### 📦 需要下载的三件套
 
@@ -41,49 +45,59 @@
 > 🧩 **防过度思考模板**（`custom_template.jinja`）已包含在本仓库 → [scripts/custom_template.jinja](scripts/custom_template.jinja)
 > 🌐 **国内加速**：把下载地址里的 `huggingface.co` 换成 `hf-mirror.com` 即可。
 
-![上下文完整曲线](assets/chart9-context-full-curve.svg)
+## ⚠️ 三个必须知道的真相（都是实测推翻旧结论）
 
-![配置演进](assets/chart10-config-evolution.svg)
+1. **上下文硬上限是 262,144** —— llama.cpp 会把更大的 `-c` **静默封顶**。用短 prompt 完全看不出，只有超长输入才会暴露（详见 [上下文真相](docs/context-limits-and-yarn.md)）
+2. **q4_0 KV 比 q8_0 更快** —— 同为 262K：q8_0 只有 **9.1 tok/s**，q4_0 有 **87~91 tok/s**。q4_0 不是"降质换容量"，**召回测试完全无损**
+3. **YaRN 能到 1M，但只有 4~5 tok/s** —— 解锁参数（`--override-kv` + `--yarn-orig-ctx`）有效，但 llama.cpp 的 RoPE 缩放路径未优化；官方推荐的长上下文引擎是 **vLLM / SGLang**（需 32GB+ 显存）
 
 ## 🎯 10 秒决策
 
 | 你的场景 | 选择 |
 |---|---|
-| 日常对话 / 编码 / agent（要视觉）| **视觉模式 180K**（上面一行命令）|
-| 超长纯文本材料（> 180K）| 纯文本 190K（去掉 mmproj 段）|
-| 多客户端同时连接 | 加 `-np 2`（牺牲约 0.1 GB 显存）|
+| 日常对话 / 编码 / agent（要视觉）| **262K + q4_0（上面一行命令）** ✅ |
+| 想要更大的上下文 | 262K 是硬上限；YaRN 1M 实测仅 4-5 tok/s（[详情](docs/context-limits-and-yarn.md)）|
+| 多客户端同时连接 | `-np 2`（各 131K）/ `-np 4`（各 65K，总吞吐 124 tok/s）|
+| 真正的 1M 交互 | 需换 32GB+ 显存（vLLM 路线）|
+| 多客户端同时连接 | `-np 2`（各 131K）/ `-np 4`（各 65K，总吞吐 124 tok/s）|
 | 思考停不下来 | 已内置双保险（budget + 模板注入），无需操作 |
 
-**五个反直觉发现**（全部有对照组数据）：
+**七个反直觉发现**（全部有对照组实测数据）：
 
-1. **上下文上限是 180K，不是 150K** —— 早期"152K 滑坡"是旧配置（默认 `-np 4`，显存只剩 158MB）的测量假象
-2. **上下文-速度曲线是震荡的** —— 182~186K 是低谷（59~62 tok/s），188~190K 回升（81~87）——**避开低谷区**
-3. **一堆"社区推荐"参数在本机是负优化**：`-ub 1024`（−16%）、`--spec-default`（−39%）、iMatrix 混合量化（−27%）
-4. **自编译的工具链配对是硬红线** —— nvcc 12.8 + MSVC 让 MTP prefill 慢 57 倍（[上游 issue #28790](https://github.com/ggml-org/llama.cpp/issues/28790)，已定位并修复）
-5. **一句系统提示词治好过度思考** —— 思考量 −46%、正文恢复输出（`presence_penalty` / 修复模板 / 降上下文均实测无效）
+1. **上下文硬上限是 262,144** —— llama.cpp 会**静默封顶**更大的 `-c`（短 prompt 测不出来，只有超长输入才暴露）
+2. **q4_0 KV 比 q8_0 更快** —— 同为 262K：q8_0 只有 **9.1 tok/s**，q4_0 达 **87~91**；且召回测试**无损**
+3. **YaRN 能到 1M，但只有 4~5 tok/s** —— 解锁参数（`--override-kv` + `--yarn-orig-ctx`）确实有效，但性能不行（llama.cpp 的 RoPE 缩放路径未优化）
+4. **一句系统提示词治好过度思考** —— 思考量 −46%、正文恢复输出（`presence_penalty` / 修复模板 / 降上下文均实测无效）
+5. **自编译的工具链配对是硬红线** —— nvcc 12.8 + MSVC 让 MTP prefill 慢 57 倍（[上游 #28790](https://github.com/ggml-org/llama.cpp/issues/28790)，已定位修复）
+6. **一堆"社区推荐"参数在本机是负优化**：`-ub 1024`（−16%）、`--spec-default`（−39%）、iMatrix 混合量化（−27%）
+7. **注意力的真实成本**：空载 82 tok/s → 装载 13.8 万 tokens 后降到 **29.5 tok/s**（每生成一步都要读完整个 KV）
 
-## 📜 六轮调优历程
+## 📜 七轮调优历程
 
 | 轮次 | 主题 | 关键收获 |
 |---|---|---|
 | 1 | **量化选型**（53 → 1）| NVFP4-LOW 胜出（速度双冠、质量打平）|
-| 2 | **KV + MTP 调优** | q8_0 KV（容量 +56%）· MTP n-max 3（生成 +40%）|
+| 2 | **KV + MTP 调优** | MTP n-max 3（生成 +40%）|
 | 3 | **思考控制** | xhigh 修复：`--reasoning-budget` + 模板注入 |
-| 4 | **自编译引擎** | CUDA 13.3 官方配对：prefill 1692 · 修复上游 bug |
-| 5 | **上下文突破** | 150K → 180K（发现 `-np 1` 释放 1.15 GB 显存）|
-| 6 | **穷尽复查** | 40+ 参数全排查，确认到达当前硬件极限 |
+| 4 | **自编译引擎** | CUDA 13.3 官方配对：prefill +13% · 修复上游 bug |
+| 5 | **上下文修正（一）** | 150K → 180K（发现 `-np 1` 释放 1.15 GB 显存）|
+| 6 | **穷尽复查** | 40+ 参数全排查，确认无遗漏 |
+| 7 | **上下文真相（本轮）** | **q4_0 KV 让 262K 真正可用**（+45% 上下文、速度更快）· 揭开静默封顶与 YaRN 真相 |
 
 ## 📊 成绩单（最终配置实测）
 
 | 维度 | 数值 |
 |---|---|
-| 生成速度 | **80~87 tok/s** |
-| 长文本处理 | **1692 tok/s**（4K prefill）· 23K 输入仅 16.9 秒 |
-| 视觉识别 | **4.2 秒/张**（Q8 量化 mmproj）|
-| 上下文 | **180K**（视觉安全上限）· 190K（文本最优）|
-| 显存余量 | 531 MB @ 180K（视觉模式）|
+| 生成速度 | **81.8 tok/s**（8 轮中位，波动 ±4%）|
+| 首 token 延迟 | **0.17 s**（短问）· 2.78 s（4K）· 30.97 s（45K）|
+| 长文本处理 | **1992 tok/s**（4K prefill）｜ 45K 输入 31 秒 |
+| 视觉识别 | **2.9 秒/张**（Q8 mmproj，3 轮中位）|
+| 上下文 | **262,144**（模型硬上限；q4_0 KV 让它真正可用）|
+| 满载生成 | 29.5 tok/s（装载 13.8 万 tokens 后）|
+| 显存余量 | 551 MB @ 262K（视觉模式）|
+| 并发能力 | `-np 2` 各 131K（总吞吐 113）｜ `-np 4` 各 65K（总吞吐 124）|
 | 散热 | 12 分钟满载**零衰减** |
-| 思考控制 | xhigh 质量档 + 双保险（budget 12000 + 模板注入）|
+| 思考控制 | xhigh + 双保险（budget 12000 + 模板注入）|
 
 ![参数红黑榜](assets/chart8-parameter-scoreboard.svg)
 
