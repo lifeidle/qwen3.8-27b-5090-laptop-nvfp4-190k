@@ -13,22 +13,26 @@
 
 ---
 
-## 🏆 Final Results (TL;DR — copy these two configs)
+## 🏆 Final Results (TL;DR — copy this config)
 
-| Mode | Context | Generation | Long-input prefill | Vision |
-|---|---|---|---|---|
-| **🖼 Vision (daily driver)** | **180K** | **80~87 tok/s** | **1692 tok/s** | ✅ **4.2 s/image** |
-| 📄 Text-only (long material) | **190K** | 86.7 tok/s | — | — |
+| Metric | Result |
+|---|---|
+| **Generation** | **81.8 tok/s** (median of 8 runs, ±4%) |
+| **Time to first token** | **0.17 s** (short) · 2.78 s (4K) · 30.97 s (45K) |
+| **Context** | **262,144** (model hard ceiling, verified) |
+| **Vision** | ✅ on, **2.9 s/image** |
+| **At full load** | 29.5 tok/s (after loading 137,944 tokens) |
+| **Prefill** | **1992 tok/s** (4K) |
 
 **Vision mode · one-line launch** (paste into PowerShell; close the window to stop):
 
 ```powershell
-& "D:\llama.cpp\build\bin\llama-server.exe" -m "D:\models\Qwen3.8-27B\Qwen3.8-27B-NVFP4-MTP-LOW.gguf" --mmproj "D:\models\Qwen3.8-27B\mmproj-Q8_0.gguf" -ngl 99 -fa on -fit off -c 180000 -np 1 --cache-type-k q8_0 --cache-type-v q8_0 --ctx-checkpoints 4 --spec-type draft-mtp --spec-draft-n-max 3 --reasoning-effort xhigh --reasoning-budget 12000 --chat-template-file "D:\models\Qwen3.8-27B\custom_template.jinja" --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 --host 127.0.0.1 --port 8082 --load-mode none --jinja
+& "D:\llama.cpp\build\bin\llama-server.exe" -m "D:\models\Qwen3.8-27B\Qwen3.8-27B-NVFP4-MTP-LOW.gguf" --mmproj "D:\models\Qwen3.8-27B\mmproj-Q8_0.gguf" -ngl 99 -fa on -fit off -c 262144 -np 1 --cache-type-k q4_0 --cache-type-v q4_0 --ctx-checkpoints 4 --spec-type draft-mtp --spec-draft-n-max 3 --reasoning-effort xhigh --reasoning-budget 12000 --chat-template-file "D:\models\Qwen3.8-27B\custom_template.jinja" --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 --host 127.0.0.1 --port 8082 --load-mode none --jinja
 ```
 
-> Text-only: drop the `--mmproj "…"` segment and set `-c 190000`. Adjust paths to your setup.
+> Adjust the paths to your setup. **262,144 is the model's hard ceiling** — `-c` values above it are silently capped.
 
-**Common basis**: NVFP4-MTP-LOW (14.47 GiB) · q8_0 KV · **self-built CUDA 13.3** · RTX 5090 Laptop 24GB
+**Common basis**: NVFP4-MTP-LOW (14.47 GiB) · **q4_0 KV** · **self-built CUDA 13.3** · RTX 5090 Laptop 24GB
 
 ### 📦 What to download (3 pieces)
 
@@ -41,9 +45,7 @@
 > 🧩 **Anti-overthinking template** (`custom_template.jinja`) ships with this repo → [scripts/custom_template.jinja](scripts/custom_template.jinja)
 > 🌐 **China acceleration**: replace `huggingface.co` with `hf-mirror.com` in the download URLs.
 
-![Full context curve](assets/chart9-context-full-curve.svg)
-
-![Config evolution](assets/chart10-config-evolution.svg)
+![Final performance](assets/chart11-final-performance.svg)
 
 ## 🎯 10-Second Decision
 
@@ -77,13 +79,16 @@
 
 | Dimension | Value |
 |---|---|
-| Generation | **80~87 tok/s** |
-| Long-input | **1692 tok/s** (4K prefill) · 23K input in 16.9 s |
-| Vision | **4.2 s/image** (Q8 mmproj) |
-| Context | **180K** (vision ceiling) · 190K (text optimum) |
-| VRAM free | 531 MB @ 180K vision |
+| Generation | **81.8 tok/s** (median of 8, ±4%) |
+| Time to first token | **0.17 s** (short) · 2.78 s (4K) · 30.97 s (45K) |
+| Long-input | **1992 tok/s** (4K prefill) · 45K in 31 s |
+| Vision | **2.9 s/image** (Q8 mmproj, median of 3) |
+| Context | **262,144** (hard ceiling; q4_0 makes it usable) |
+| At full load | 29.5 tok/s (137,944 tokens loaded) |
+| VRAM free | 551 MB @ 262K vision |
+| Concurrency | `-np 2` 131K each (113 agg) · `-np 4` 65K each (124 agg) |
 | Thermals | 12-minute full load, **zero degradation** |
-| Thinking control | xhigh quality + double fuse (budget 12000 + template injection) |
+| Thinking control | xhigh + double fuse (budget 12000 + template injection) |
 
 ![Parameter scoreboard](assets/chart8-parameter-scoreboard.svg)
 
