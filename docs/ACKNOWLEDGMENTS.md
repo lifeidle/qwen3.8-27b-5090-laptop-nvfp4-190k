@@ -29,7 +29,7 @@ sources under their own licenses.
 
 | What we used | Source |
 |---|---|
-| `--override-kv qwen35.context_length=int:N` + `--yarn-orig-ctx` for exceeding 262K | *Qwen3.8-27B-Thor-llama.cpp deployment guide* (CSDN, community write-up) |
+| `--override-kv qwen35.context_length=int:N` + `--yarn-orig-ctx` for exceeding 256K | *Qwen3.8-27B-Thor-llama.cpp deployment guide* (CSDN, community write-up) |
 | Official YaRN parameter set (`rope_type=yarn, factor=4.0, rope_theta=10000000, partial_rotary_factor=0.25, mrope_*`) | **Qwen / Alibaba Cloud official guide** — *Qwen3.8-27B Practical Guide: Control Reasoning Depth and Extend Context to 1M Tokens* |
 | The `-np 1` insight (single slot frees ~1.15 GB → more context) | **PierpaoloPernici**'s public benchmark gist for the same `esatapedico` NVFP4-MTP model |
 | Community NVFP4 tier analysis (LOW vs MEDIUM vs VERY-HIGH; "LOW is the throughput winner") | Same gist, plus the `esatapedico` model-card sweep |
