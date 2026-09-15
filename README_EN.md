@@ -59,7 +59,7 @@
 **Eight counter-intuitive findings** (all with control-group data):
 
 1. **The hard ceiling is 262,144** — llama.cpp **silently caps** any larger `-c` (short test prompts never expose it)
-2. **q4_0 KV is faster than q8_0** — at 262K: q8_0 = **9.1 tok/s**, q4_0 = **87–91**; recall tested lossless
+2. **q4_0 KV is faster than q8_0** — at 256K: q8_0 = **9.1 tok/s**, q4_0 = **87–91**; recall tested lossless
 3. **YaRN reaches 1M but only runs at 4–5 tok/s** — the unlock flags work, the performance does not
 4. **The context-speed curve is not monotonic** — 182~186K sags (59~62), 188~190K recovers (81~87): never interpolate
 5. **One system-prompt line cures overthinking** — thinking −46%, content restored (`presence_penalty` / fixed template / lower context all ineffective)
@@ -77,7 +77,7 @@
 | 4 | **Self-built engine** | CUDA 13.3 official pairing: prefill +13% · upstream bug fixed |
 | 5 | **Context correction (1)** | 150K → 180K (`-np 1` frees 1.15 GB of VRAM) |
 | 6 | **Exhaustive re-check** | 40+ params swept; no stone unturned |
-| 7 | **Context truth (this round)** | **q4_0 KV makes 262K truly usable** (+45% context, faster) · silent-cap & YaRN truths uncovered |
+| 7 | **Context truth (this round)** | **q4_0 KV makes 256K truly usable** (+45% context, faster) · silent-cap & YaRN truths uncovered |
 
 ## 📊 Scoreboard (final config, measured)
 
@@ -89,7 +89,7 @@
 | Vision | **2.9 s/image** (Q8 mmproj, median of 3) |
 | Context | **262,144** (hard ceiling; q4_0 makes it usable) |
 | At full load | 29.5 tok/s (137,944 tokens loaded) |
-| VRAM free | 551 MB @ 262K vision |
+| VRAM free | 551 MB @ 256K vision |
 | Concurrency | `-np 2` 131K each (113 agg) · `-np 4` 65K each (124 agg) |
 | Thermals | 12-minute full load, **zero degradation** |
 | Thinking control | xhigh + double fuse (budget 12000 + template injection) |
@@ -129,7 +129,7 @@
 
 ## 📌 Three Core Findings
 
-1. **q8_0 KV is the most underrated optimization** — zero speed cost, +56% capacity (212K), near-lossless. Meanwhile q4_0-class KV reaches the full 262K but makes long prompts **28× slower** (kernel fallback) — unusable.
+1. **q8_0 KV is the most underrated optimization** — zero speed cost, +56% capacity (212K), near-lossless. Meanwhile q4_0-class KV reaches the full 256K but makes long prompts **28× slower** (kernel fallback) — unusable.
 2. **MTP needs no tuning** — n-max 3 is optimal on a 24GB card (2/3/4/5 and p-min all swept). High acceptance ≠ high speed.
 3. **Engine gains depend on quantization type** — b10840 → b10889 gave NVFP4 +6.6% speed and +48K capacity, but K-quants −11%. **Always re-measure capacity after an engine upgrade.**
 
@@ -145,7 +145,7 @@
 
 | Model | F16 KV ceiling | **q8_0 KV ceiling** | q4_0-class KV |
 |---|---|---|---|
-| IQ3_S | 136K | **212K** (240K extreme) | 262K ⚠️ 28× slower |
+| IQ3_S | 136K | **212K** (240K extreme) | 256K ⚠️ 28× slower |
 | NVFP4-LOW | 96K | **200K** | — |
 | NVFP4-MID-HIGH | 88K | ~160K (est.) | — |
 | UD-Q4_K_S | 96K | 200K | — |
@@ -157,7 +157,7 @@
 | 32K + F16 KV | 13.6 s | Baseline |
 | 136K + F16 KV | 15.2 s | No penalty |
 | 200K + **q8_0** | **15.1 s** | **No penalty** ✅ |
-| 262K + **q4_0-class** | **~420 s, never finished** | ❌ Kernel fallback; throughput decays 286 → 29 tok/s |
+| 256K + **q4_0-class** | **~420 s, never finished** | ❌ Kernel fallback; throughput decays 286 → 29 tok/s |
 
 ### 2️⃣ Speed duel (cross-validated on two engine builds)
 
@@ -288,7 +288,7 @@ The model is a VLM; the vision component (mmproj) ships separately and can be **
 ## ⚙️ Eight Reusable Lessons
 
 1. **`reasoning_effort` is mandatory** — the default (xhigh) burned 8,000 tokens of pure thinking with zero output. Pass `{"chat_template_kwargs":{"reasoning_effort":"medium"}}`. A community 4,800-task test: xhigh burns 7–11× more tokens than low for 0–4.7 points. **Never disable reasoning** (NVFP4 collapses to 13/30 on HumanEval+ with reasoning off).
-2. **q4_0-class KV has a hidden performance cliff** — best-looking capacity (262K), 28× slower long prompts.
+2. **q4_0-class KV has a hidden performance cliff** — best-looking capacity (256K), 28× slower long prompts.
 3. **MTP is pure win on dense models** — n-max 3 gives +73~79% (the "MTP slows MoE down" experience doesn't apply).
 4. **High acceptance ≠ high speed** — speed = per-pass cost × per-pass yield; light heads beat high acceptance.
 5. **NVFP4's FP4 acceleration only shows in prefill** — decode is bandwidth-bound and depends on head design.
@@ -324,7 +324,7 @@ Thinking sampling `temp 1.0 / top_p 0.95 / top_k 20`; instruct sampling `temp 0.
 
 ## ❓ FAQ
 
-**Q: Why not the full 262K (the model's native maximum)?**
+**Q: Why not the full 256K (the model's native maximum)?**
 A: It works, but only with q4_0-class KV, which makes long prompts 28× slower (kernel fallback). 192K + q8_0 is the sweet spot across capacity, speed, and quality.
 
 **Q: Does q8_0 KV hurt quality?**
@@ -454,7 +454,7 @@ NVIDIA, GeForce, RTX and CUDA are trademarks of NVIDIA Corporation. Qwen is a tr
 |---|---|
 | [final-benchmark.md](data/final-benchmark.md) | **Final config benchmark**: 8-run stability, TTFT curve, vision latency, loaded-context speed |
 | [nmax-3-vs-4-comparison.md](data/nmax-3-vs-4-comparison.md) | **MTP draft-depth rigorous comparison** (interleaved design + acceptance rates + statistics) |
-| [context-scaling-history.md](data/context-scaling-history.md) | **Full context-scaling history**: 88K → 262K, including three conclusions we had to retract |
+| [context-scaling-history.md](data/context-scaling-history.md) | **Full context-scaling history**: 88K → 256K, including three conclusions we had to retract |
 | [speed-results.md](data/speed-results.md) | Rounds 1–2: three-way quant duel, MTP sweep, KV experiments |
 | [round2-new-results.md](data/round2-new-results.md) | Round 2 supplementary data |
 | [round3-6-latest.md](data/round3-6-latest.md) | Rounds 3–6 (thinking control / self-build / context / exhaustive sweep) |
@@ -464,7 +464,7 @@ NVIDIA, GeForce, RTX and CUDA are trademarks of NVIDIA Corporation. Qwen is a tr
 
 | File | Content |
 |---|---|
-| [context-limits-and-yarn.md](docs/context-limits-and-yarn.md) | **262K ceiling / q4_0 breakthrough / YaRN truth / engine comparison** |
+| [context-limits-and-yarn.md](docs/context-limits-and-yarn.md) | **256K ceiling / q4_0 breakthrough / YaRN truth / engine comparison** |
 | [windows-self-build-recipe.en.md](docs/windows-self-build-recipe.en.md) | Windows self-build recipe (English; [中文](docs/windows-self-build-recipe.md)) |
 | [custom-build-and-mtp-bug.md](docs/custom-build-and-mtp-bug.md) | Self-build pitfalls + MTP prefill bug root-cause |
 | [reasoning-guide.md](docs/reasoning-guide.md) | Reasoning depth control (the xhigh token-burn problem) |
