@@ -48,7 +48,7 @@ Same sweep on UD: n-max 2 = 54.7, n-max 3 = 59.3.
 | IQ3_S | b10840 | 200K | q8_0 | 15.1 s |
 | IQ3_S | b10840 | 212K | q8_0 | 15.0 s |
 | IQ3_S | b10889 | 212K | q8_0 | 14.9 s |
-| IQ3_S | b10840 | 262K | **q4_0-class** | **~420 s (never finished)** |
+| IQ3_S | b10840 | 256K | **q4_0-class** | **~420 s (never finished)** |
 | NVFP4-LOW | b10840 | 152K | q8_0 | 10.1 s |
 | NVFP4-LOW | b10889 | 152K | q8_0 | 9.7 s |
 | UD-Q4_K_S | b10840 | 152K | q8_0 | 15.2 s |
@@ -58,7 +58,7 @@ Same sweep on UD: n-max 2 = 54.7, n-max 3 = 59.3.
 
 | Model | F16 KV | q8_0 KV | q4_0-class KV |
 |---|---|---|---|
-| IQ3_S | 136K | 212K | 262K (but 28× slower prefill) |
+| IQ3_S | 136K | 212K | 256K (but 28× slower prefill) |
 | NVFP4-LOW (b10840) | 96K | 152K | — |
 | NVFP4-LOW (b10889) | — | **200K** | — |
 | NVFP4-MID-HIGH | 88K | ~160K (est.) | — |
