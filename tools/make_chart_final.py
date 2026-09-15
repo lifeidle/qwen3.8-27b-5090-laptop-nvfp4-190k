@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Final performance chart for the production config (after the q4_0 + 262K findings)."""
+"""Final performance chart for the production config (after the q4_0 + 256K findings)."""
 import os, html
 
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets")
@@ -34,14 +34,14 @@ def save(name, s):
 def chart_final():
     W, H = 1000, 560
     s = head(W, H, "Final Performance — Qwen3.8-27B on RTX 5090 Laptop 24GB",
-             "Production config: NVFP4-MTP-LOW · self-built CUDA 13.3 · 262K context · q4_0 KV · MTP n-max 3 · vision ON · -np 1")
+             "Production config: NVFP4-MTP-LOW · self-built CUDA 13.3 · 256K context · q4_0 KV · MTP n-max 3 · vision ON · -np 1")
 
     # --- KPI cards (top) ---
     kpis = [
         ("81.8", "tok/s", "generation (median of 8)", GREEN),
         ("0.17", "s", "time to first token (short)", BLUE),
         ("2.9", "s", "per image (vision)", GOLD),
-        ("262K", "ctx", "hard ceiling (model)", DARK),
+        ("256K", "ctx", "hard ceiling (model)", DARK),
     ]
     for i, (val, unit, label, color) in enumerate(kpis):
         x = 26 + i * 240
