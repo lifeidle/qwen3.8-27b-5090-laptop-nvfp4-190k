@@ -1,4 +1,4 @@
-# Context Scaling History — How the Ceiling Moved from 88K to 262K
+# Context Scaling History — How the Ceiling Moved from 88K to 256K
 
 > A complete, honest record of every context-length conclusion we reached — **including the three that turned out to be wrong**.
 > Useful if you're trying to squeeze long context out of a 24 GB card: you'll likely hit the same measurement traps.
@@ -77,12 +77,12 @@ E srv send_error: request (368270 tokens) exceeds the available context size (26
 
 The real ceiling is 262,144 — but reaching it requires q4_0 KV:
 
-| KV type | decode @ 262K | VRAM free |
+| KV type | decode @ 256K | VRAM free |
 |---|---|---|
 | q8_0 | **9.1 tok/s** ❌ | 515 MB |
 | **q4_0** | **87–91 tok/s** ✅ | 1017 MB |
 
-q8_0 *starts* at 262K but collapses (this is why the q8_0-era "ceiling" looked like ~190K).
+q8_0 *starts* at 256K but collapses (this is why the q8_0-era "ceiling" looked like ~190K).
 q4_0 is not a quality trade: a needle-in-haystack recall test (12K document, unique code at 60 %
 depth) **passed identically for both**, with equal prefill speed.
 
@@ -91,13 +91,13 @@ depth) **passed identically for both**, with equal prefill speed.
 
 ---
 
-## Going beyond 262K: YaRN
+## Going beyond 256K: YaRN
 
 Possible, and the unlock is real — but performance is not:
 
 | Config | Actual `n_ctx_slot` | decode |
 |---|---|---|
-| 262K (no YaRN) | 262144 | **87.2** ✅ |
+| 256K (no YaRN) | 262144 | **87.2** ✅ |
 | 512K + YaRN 2× | 524288 (unlocked) | **3.1** ❌ |
 | 1M + YaRN 4× | 1048576 (unlocked) | **4.7** ❌ |
 
