@@ -1,6 +1,6 @@
-# Context Limits: the 262K Ceiling, the q4_0 Breakthrough, and the YaRN Truth
+# Context Limits: the 256K Ceiling, the q4_0 Breakthrough, and the YaRN Truth
 
-> Three corrections discovered 2026-09-14/15 — **read this before trying to exceed 262K**.
+> Three corrections discovered 2026-09-14/15 — **read this before trying to exceed 256K**.
 > TL;DR: the real ceiling is 262,144 · q4_0 KV makes it *faster* than q8_0 · YaRN unlocks 1M but runs at 3-5 tok/s in llama.cpp.
 
 ---
@@ -19,7 +19,7 @@ W srv load_model: the slot context (305152) exceeds the training context of the 
 E srv send_error: task id = 0, error: request (368270 tokens) exceeds the available context size (262144 tokens)
 ```
 
-**Verification method (important)**: always test with a prompt **longer than the expected ceiling**. Our earlier "300K/400K/440K works!" results were all artifacts — the service was really running 262K, and the short test prompts could not expose it.
+**Verification method (important)**: always test with a prompt **longer than the expected ceiling**. Our earlier "300K/400K/440K works!" results were all artifacts — the service was really running 256K, and the short test prompts could not expose it.
 
 **Deliberately raising the cap** (advanced):
 ```powershell
@@ -29,7 +29,7 @@ E srv send_error: task id = 0, error: request (368270 tokens) exceeds the availa
 
 ---
 
-## 2. q4_0 KV: a genuinely free doubling (and q8_0 cannot reach 262K at all)
+## 2. q4_0 KV: a genuinely free doubling (and q8_0 cannot reach 256K at all)
 
 Same context (262,144), same model, K and V quantized identically:
 
@@ -38,8 +38,8 @@ Same context (262,144), same model, K and V quantized identically:
 | q8_0 | **9.1 tok/s** ❌ | 515 MB |
 | **q4_0** | **87–91 tok/s** ✅ | 1017 MB |
 
-- **q8_0 starts fine at 262K but collapses** — this is why the q8_0-era ceiling looked like ~190K
-- **q4_0 is the only way to make 262K practical**
+- **q8_0 starts fine at 256K but collapses** — this is why the q8_0-era ceiling looked like ~190K
+- **q4_0 is the only way to make 256K practical**
 - **Quality is lossless in our test**: needle-in-haystack (12K document, unique code buried at 60% depth) — **q4_0 and q8_0 both HIT**, with identical prefill speed
 
 > Historical note: an early "q4_0 is 28× slower" result was a **mixed-type artifact** (`K=q8_0 + V=q4_0`) on a different model. **Full q4_0 has no such problem.**
@@ -59,7 +59,7 @@ Measured (all with the full flag set):
 
 | Config | Actual `n_ctx_slot` | decode | Cap warning |
 |---|---|---|---|
-| 262K (no YaRN) | 262144 | **87.2** ✅ | — |
+| 256K (no YaRN) | 262144 | **87.2** ✅ | — |
 | 512K + YaRN | **524288** ✅ unlocked | **3.1** ❌ | none |
 | 1M + YaRN | **1048576** ✅ unlocked | **4.7** ❌ | none |
 
@@ -85,7 +85,7 @@ And a Thor + llama.cpp deployment guide acknowledges the same reality:
 | NVFP4 hardware acceleration | ✅ | ✅ (ModelOpt, more "official") |
 | Model file size | **14.47 GB** | 21–23 GB |
 | KV cache precision | **q4_0 (~13 KB/token)** | FP8 (~19 KB/token) |
-| 262K context on 24GB | ✅ **87 tok/s measured** | ❌ official docs require 32GB |
+| 256K context on 24GB | ✅ **87 tok/s measured** | ❌ official docs require 32GB |
 | Windows native | ✅ | ❌ WSL2/Docker required |
 | First start | 7 s | JIT compile (minutes) |
 
@@ -99,7 +99,7 @@ And a Thor + llama.cpp deployment guide acknowledges the same reality:
 
 | Goal | Solution | Speed |
 |---|---|---|
-| Daily use, big context | **262K + q4_0 KV** | **82 tok/s** (29.5 at full load) |
-| Long-material Q&A | 262K (prefill 45K ≈ 31 s) | 49 tok/s after prefill |
+| Daily use, big context | **256K + q4_0 KV** | **82 tok/s** (29.5 at full load) |
+| Long-material Q&A | 256K (prefill 45K ≈ 31 s) | 49 tok/s after prefill |
 | True 1M | YaRN in llama.cpp | 4–5 tok/s — batch/library use only |
 | Fast 1M | switch to vLLM — needs **32GB+** | — |
