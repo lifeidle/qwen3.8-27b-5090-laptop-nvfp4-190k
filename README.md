@@ -71,6 +71,7 @@
 5. **自编译的工具链配对是硬红线** —— nvcc 12.8 + MSVC 让 MTP prefill 慢 57 倍（[上游 #28790](https://github.com/ggml-org/llama.cpp/issues/28790)，已定位修复）
 6. **一堆"社区推荐"参数在本机是负优化**：`-ub 1024`（−16%）、`--spec-default`（−39%）、iMatrix 混合量化（−27%）
 7. **注意力的真实成本**：空载 82 tok/s → 装载 13.8 万 tokens 后降到 **29.5 tok/s**（每生成一步都要读完整个 KV）
+8. **n-max 3 与 4 几乎打平** —— 严格交叉测试（各 15 样本）显示 4 平均快 3~4%，但**波动大一倍**（69~101 vs 74~89 tok/s）→ **最终保留 3**（稳定优先）。详见 [对比报告](data/nmax-3-vs-4-comparison.md)
 
 ## 📜 七轮调优历程
 
@@ -447,3 +448,42 @@ NVIDIA、GeForce、RTX、CUDA 是 NVIDIA Corporation 的商标；Qwen 是阿里�
 ## 致谢
 
 **Alibaba / Qwen 团队**（基座模型）· **unsloth**（NVFP4 量化方法、动态量化家族）· **DASLab**（GSQ-RCO 学术量化）· **esatapedico**（NVFP4-MTP GGUF 家族打包与透明模型卡）· **llama.cpp 社区**（引擎与 MTP 支持）
+
+
+---
+
+## 📚 完整数据与文档索引
+
+### 原始测量数据（`data/`）
+
+| 文件 | 内容 |
+|---|---|
+| [final-benchmark.md](data/final-benchmark.md) | **最终配置基准**：8 轮生成稳定性、TTFT 曲线、视觉延迟、满载生成 |
+| [nmax-3-vs-4-comparison.md](data/nmax-3-vs-4-comparison.md) | **MTP 草稿深度严格对比**（交叉设计 + 接受率 + 统计量）|
+| [context-scaling-history.md](data/context-scaling-history.md) | **上下文探索全史**：88K → 262K 的每一步，含三个被推翻的错误结论 |
+| [speed-results.md](data/speed-results.md) | 第 1–2 轮：三大量化对决、MTP 扫描、KV 实验 |
+| [round2-new-results.md](data/round2-new-results.md) | 第 2 轮补充数据 |
+| [round3-6-latest.md](data/round3-6-latest.md) | 第 3–6 轮汇总（思考控制 / 自编译 / 上下文 / 参数穷尽）|
+| [thermal-stress-12min-100rounds.txt](data/thermal-stress-12min-100rounds.txt) | 12 分钟满载散热原始日志 |
+
+### 技术文档（`docs/`）
+
+| 文件 | 内容 |
+|---|---|
+| [context-limits-and-yarn.md](docs/context-limits-and-yarn.md) | **262K 硬上限 / q4_0 突破 / YaRN 真相 / 引擎对比** |
+| [windows-self-build-recipe.md](docs/windows-self-build-recipe.md) | Windows 自编译完整配方（[English](docs/windows-self-build-recipe.en.md)）|
+| [custom-build-and-mtp-bug.md](docs/custom-build-and-mtp-bug.md) | 自编译四坑 + MTP prefill bug 定位全过程 |
+| [reasoning-guide.md](docs/reasoning-guide.md) | 思考深度控制（xhigh 烧 token 问题与解法）|
+| [xhigh-overthinking-fix.md](docs/xhigh-overthinking-fix.md) | 过度思考修复（系统提示词 + 模板注入）|
+| [vision-setup.md](docs/vision-setup.md) | 视觉配置（mmproj 量化、显存开销实测）|
+| [ACKNOWLEDGMENTS.md](docs/ACKNOWLEDGMENTS.md) | **致谢与引用来源**（第三方数据出处）|
+
+### 工具（`tools/`）
+
+全部图表生成脚本与测量脚本，可复现每一个数字。
+
+### 许可与法律
+
+- 代码：**MIT** ｜ 文档与数据：**CC BY 4.0** —— 完整条款见 [LICENSE](LICENSE)
+- 第三方组件（模型/引擎/CUDA）各自的许可：见 [docs/ACKNOWLEDGMENTS.md](docs/ACKNOWLEDGMENTS.md)
+- **本仓库不包含任何模型权重**
