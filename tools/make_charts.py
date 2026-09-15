@@ -98,7 +98,7 @@ def chart_capacity():
     s.append(f'<text x="24" y="{H - 30}" font-family="{FONT}" font-size="12" fill="{MUTED}">'
              f'q8_0 KV costs nothing in speed (measured) and lifts capacity +48%~+108%: 🔑 the single most effective lever.</text>')
     s.append(f'<text x="24" y="{H - 13}" font-family="{FONT}" font-size="11" fill="{RED}">'
-             f'⚠️ q4_0-class KV reaches the full 262K but makes long prompts ~28× slower (kernel fallback) — do not use.</text>')
+             f'⚠️ q4_0-class KV reaches the full 256K but makes long prompts ~28× slower (kernel fallback) — do not use.</text>')
     s.append("</svg>")
     open(os.path.join(OUT, "chart2-context-capacity.svg"), "w", encoding="utf-8").write("\n".join(s))
 
