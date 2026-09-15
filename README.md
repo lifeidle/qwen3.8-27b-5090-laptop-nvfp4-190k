@@ -48,15 +48,15 @@
 ## ⚠️ 三个必须知道的真相（都是实测推翻旧结论）
 
 1. **上下文硬上限是 262,144** —— llama.cpp 会把更大的 `-c` **静默封顶**。用短 prompt 完全看不出，只有超长输入才会暴露（详见 [上下文真相](docs/context-limits-and-yarn.md)）
-2. **q4_0 KV 比 q8_0 更快** —— 同为 262K：q8_0 只有 **9.1 tok/s**，q4_0 有 **87~91 tok/s**。q4_0 不是"降质换容量"，**召回测试完全无损**
+2. **q4_0 KV 比 q8_0 更快** —— 同为 256K：q8_0 只有 **9.1 tok/s**，q4_0 有 **87~91 tok/s**。q4_0 不是"降质换容量"，**召回测试完全无损**
 3. **YaRN 能到 1M，但只有 4~5 tok/s** —— 解锁参数（`--override-kv` + `--yarn-orig-ctx`）有效，但 llama.cpp 的 RoPE 缩放路径未优化；官方推荐的长上下文引擎是 **vLLM / SGLang**（需 32GB+ 显存）
 
 ## 🎯 10 秒决策
 
 | 你的场景 | 选择 |
 |---|---|
-| 日常对话 / 编码 / agent（要视觉）| **262K + q4_0（上面一行命令）** ✅ |
-| 想要更大的上下文 | 262K 是硬上限；YaRN 1M 实测仅 4-5 tok/s（[详情](docs/context-limits-and-yarn.md)）|
+| 日常对话 / 编码 / agent（要视觉）| **256K + q4_0（上面一行命令）** ✅ |
+| 想要更大的上下文 | 256K 是硬上限；YaRN 1M 实测仅 4-5 tok/s（[详情](docs/context-limits-and-yarn.md)）|
 | 多客户端同时连接 | `-np 2`（各 131K）/ `-np 4`（各 65K，总吞吐 124 tok/s）|
 | 真正的 1M 交互 | 需换 32GB+ 显存（vLLM 路线）|
 | 多客户端同时连接 | `-np 2`（各 131K）/ `-np 4`（各 65K，总吞吐 124 tok/s）|
@@ -65,7 +65,7 @@
 **七个反直觉发现**（全部有对照组实测数据）：
 
 1. **上下文硬上限是 262,144** —— llama.cpp 会**静默封顶**更大的 `-c`（短 prompt 测不出来，只有超长输入才暴露）
-2. **q4_0 KV 比 q8_0 更快** —— 同为 262K：q8_0 只有 **9.1 tok/s**，q4_0 达 **87~91**；且召回测试**无损**
+2. **q4_0 KV 比 q8_0 更快** —— 同为 256K：q8_0 只有 **9.1 tok/s**，q4_0 达 **87~91**；且召回测试**无损**
 3. **YaRN 能到 1M，但只有 4~5 tok/s** —— 解锁参数（`--override-kv` + `--yarn-orig-ctx`）确实有效，但性能不行（llama.cpp 的 RoPE 缩放路径未优化）
 4. **一句系统提示词治好过度思考** —— 思考量 −46%、正文恢复输出（`presence_penalty` / 修复模板 / 降上下文均实测无效）
 5. **自编译的工具链配对是硬红线** —— nvcc 12.8 + MSVC 让 MTP prefill 慢 57 倍（[上游 #28790](https://github.com/ggml-org/llama.cpp/issues/28790)，已定位修复）
@@ -83,7 +83,7 @@
 | 4 | **自编译引擎** | CUDA 13.3 官方配对：prefill +13% · 修复上游 bug |
 | 5 | **上下文修正（一）** | 150K → 180K（发现 `-np 1` 释放 1.15 GB 显存）|
 | 6 | **穷尽复查** | 40+ 参数全排查，确认无遗漏 |
-| 7 | **上下文真相（本轮）** | **q4_0 KV 让 262K 真正可用**（+45% 上下文、速度更快）· 揭开静默封顶与 YaRN 真相 |
+| 7 | **上下文真相（本轮）** | **q4_0 KV 让 256K 真正可用**（+45% 上下文、速度更快）· 揭开静默封顶与 YaRN 真相 |
 
 ## 📊 成绩单（最终配置实测）
 
@@ -95,7 +95,7 @@
 | 视觉识别 | **2.9 秒/张**（Q8 mmproj，3 轮中位）|
 | 上下文 | **262,144**（模型硬上限；q4_0 KV 让它真正可用）|
 | 满载生成 | 29.5 tok/s（装载 13.8 万 tokens 后）|
-| 显存余量 | 551 MB @ 262K（视觉模式）|
+| 显存余量 | 551 MB @ 256K（视觉模式）|
 | 并发能力 | `-np 2` 各 131K（总吞吐 113）｜ `-np 4` 各 65K（总吞吐 124）|
 | 散热 | 12 分钟满载**零衰减** |
 | 思考控制 | xhigh + 双保险（budget 12000 + 模板注入）|
@@ -135,7 +135,7 @@
 
 ## 📌 三条核心结论
 
-1. **q8_0 KV 是最被低估的优化**——零速度代价，容量直接 +56%（212K），质量近无损。而 q4_0 系 KV 虽然能开到满血 262K，却会让长输入慢 **28 倍**（内核回退），完全不可用。
+1. **q8_0 KV 是最被低估的优化**——零速度代价，容量直接 +56%（212K），质量近无损。而 q4_0 系 KV 虽然能开到满血 256K，却会让长输入慢 **28 倍**（内核回退），完全不可用。
 2. **MTP 参数不必调**——n-max 3 就是 24GB 卡的最优（扫过 2/3/4/5 与 p-min）。接受率高 ≠ 速度快。
 3. **引擎版本的影响力与量化类型强相关**——b10840 → b10889 给 NVFP4 白送 +6.6% 速度与 +48K 容量，给 K-quant 却是 −11%。**升级引擎后必须重测容量。**
 
@@ -151,7 +151,7 @@
 
 | 模型 | F16 KV 上限 | **q8_0 KV 上限** | q4_0 系 KV |
 |---|---|---|---|
-| IQ3_S | 136K | **212K**（极限 240K） | 262K ⚠️ 慢 28× |
+| IQ3_S | 136K | **212K**（极限 240K） | 256K ⚠️ 慢 28× |
 | NVFP4-LOW | 96K | **200K** | — |
 | NVFP4-MID-HIGH | 88K | ~160K（估算） | — |
 | UD-Q4_K_S | 96K | 200K | — |
@@ -163,7 +163,7 @@
 | 32K + F16 KV | 13.6 s | 基准 |
 | 136K + F16 KV | 15.2 s | 无惩罚 |
 | 200K + **q8_0** | **15.1 s** | **无惩罚** ✅ |
-| 262K + **q4_0 系** | **~420 s 仍未完成** | ❌ 内核回退，吞吐从 286 衰减到 29 tok/s |
+| 256K + **q4_0 系** | **~420 s 仍未完成** | ❌ 内核回退，吞吐从 286 衰减到 29 tok/s |
 
 ### 2️⃣ 速度对决（两代引擎交叉验证）
 
@@ -294,7 +294,7 @@
 ## ⚙️ 八条可复用经验
 
 1. **`reasoning_effort` 是必设项** — 默认档（xhigh）实测 8,000 token 全烧在思考里、正文零输出。必须传 `{"chat_template_kwargs":{"reasoning_effort":"medium"}}`。社区 4,800 任务测试：xhigh 比 low 多烧 7–11 倍 token，只换 0–4.7 分。**永远不要关闭 reasoning**（NVFP4 关闭时 HumanEval+ 从 90 掉到 13/30）。
-2. **q4_0 系 KV 有隐藏性能悬崖** — 容量看似最优（262K），实际长输入慢 28×。
+2. **q4_0 系 KV 有隐藏性能悬崖** — 容量看似最优（256K），实际长输入慢 28×。
 3. **MTP 在 dense 模型是纯收益** — n-max 3 提速 +73~79%（MoE 模型上"MTP 减速"的经验不适用）。
 4. **接受率高 ≠ 速度快** — 速度 = 每 pass 成本 × 每 pass 收益；轻头部设计比高接受率更重要。
 5. **NVFP4 的 FP4 加速只在 prefill 兑现** — decode 是带宽受限，看的是头部设计。
@@ -330,8 +330,8 @@
 
 ## ❓ FAQ
 
-**Q：为什么不直接开 262K（模型原生最大值）？**
-A：能开，但要牺牲速度——262K 只有 q4_0 系 KV 装得下，而它会让长输入慢 28 倍（内核回退）。192K + q8_0 是"容量 / 速度 / 质量"三者的最佳平衡点。
+**Q：为什么不直接开 256K（模型原生最大值）？**
+A：能开，但要牺牲速度——256K 只有 q4_0 系 KV 装得下，而它会让长输入慢 28 倍（内核回退）。192K + q8_0 是"容量 / 速度 / 质量"三者的最佳平衡点。
 
 **Q：q8_0 KV 会损失质量吗？**
 A：实测与业界共识均为"近无损"。本项目的长文召回测试（12K/70% 与 150K/80% 深度）在 q8_0 KV 下全部通过。
@@ -460,7 +460,7 @@ NVIDIA、GeForce、RTX、CUDA 是 NVIDIA Corporation 的商标；Qwen 是阿里�
 |---|---|
 | [final-benchmark.md](data/final-benchmark.md) | **最终配置基准**：8 轮生成稳定性、TTFT 曲线、视觉延迟、满载生成 |
 | [nmax-3-vs-4-comparison.md](data/nmax-3-vs-4-comparison.md) | **MTP 草稿深度严格对比**（交叉设计 + 接受率 + 统计量）|
-| [context-scaling-history.md](data/context-scaling-history.md) | **上下文探索全史**：88K → 262K 的每一步，含三个被推翻的错误结论 |
+| [context-scaling-history.md](data/context-scaling-history.md) | **上下文探索全史**：88K → 256K 的每一步，含三个被推翻的错误结论 |
 | [speed-results.md](data/speed-results.md) | 第 1–2 轮：三大量化对决、MTP 扫描、KV 实验 |
 | [round2-new-results.md](data/round2-new-results.md) | 第 2 轮补充数据 |
 | [round3-6-latest.md](data/round3-6-latest.md) | 第 3–6 轮汇总（思考控制 / 自编译 / 上下文 / 参数穷尽）|
@@ -470,7 +470,7 @@ NVIDIA、GeForce、RTX、CUDA 是 NVIDIA Corporation 的商标；Qwen 是阿里�
 
 | 文件 | 内容 |
 |---|---|
-| [context-limits-and-yarn.md](docs/context-limits-and-yarn.md) | **262K 硬上限 / q4_0 突破 / YaRN 真相 / 引擎对比** |
+| [context-limits-and-yarn.md](docs/context-limits-and-yarn.md) | **256K 硬上限 / q4_0 突破 / YaRN 真相 / 引擎对比** |
 | [windows-self-build-recipe.md](docs/windows-self-build-recipe.md) | Windows 自编译完整配方（[English](docs/windows-self-build-recipe.en.md)）|
 | [custom-build-and-mtp-bug.md](docs/custom-build-and-mtp-bug.md) | 自编译四坑 + MTP prefill bug 定位全过程 |
 | [reasoning-guide.md](docs/reasoning-guide.md) | 思考深度控制（xhigh 烧 token 问题与解法）|
