@@ -56,24 +56,28 @@
 | Multiple clients at once | add `-np 2` (~0.1 GB VRAM cost) |
 | Thinking never stops | Already double-fused (budget + template injection) — nothing to do |
 
-**Five counter-intuitive findings** (all with control-group data):
+**Eight counter-intuitive findings** (all with control-group data):
 
-1. **The ceiling is 180K, not 150K** — the earlier "152K collapse" was an artifact of the old config (default `-np 4`, only 158MB free)
-2. **The context-speed curve oscillates** — 182~186K is a valley (59~62 tok/s), 188~190K recovers (81~87) — **avoid the valley**
-3. **Several "community-recommended" flags are regressions here**: `-ub 1024` (−16%), `--spec-default` (−39%), iMatrix mixed quant (−27%)
-4. **Toolchain pairing is a hard red line for self-builds** — nvcc 12.8 + MSVC made MTP prefill 57× slower ([upstream issue #28790](https://github.com/ggml-org/llama.cpp/issues/28790), root-caused and fixed)
-5. **One system-prompt line cures overthinking** — thinking −46%, content restored (`presence_penalty` / fixed template / lower context all measured ineffective)
+1. **The hard ceiling is 262,144** — llama.cpp **silently caps** any larger `-c` (short test prompts never expose it)
+2. **q4_0 KV is faster than q8_0** — at 262K: q8_0 = **9.1 tok/s**, q4_0 = **87–91**; recall tested lossless
+3. **YaRN reaches 1M but only runs at 4–5 tok/s** — the unlock flags work, the performance does not
+4. **The context-speed curve is not monotonic** — 182~186K sags (59~62), 188~190K recovers (81~87): never interpolate
+5. **One system-prompt line cures overthinking** — thinking −46%, content restored (`presence_penalty` / fixed template / lower context all ineffective)
+6. **Toolchain pairing is a hard red line for self-builds** — nvcc 12.8 + MSVC made MTP prefill 57× slower ([#28790](https://github.com/ggml-org/llama.cpp/issues/28790))
+7. **Several "community-recommended" flags are regressions here**: `-ub 1024` (−16%), `--spec-default` (−39%), iMatrix mixed quant (−27%)
+8. **n-max 3 vs 4 is nearly a tie** — a rigorous interleaved test (15 samples each) shows n-max 4 is 3–4% faster on average but **twice as volatile** (69–101 vs 74–89 tok/s) → **kept n-max 3**. See [comparison report](data/nmax-3-vs-4-comparison.md)
 
-## 📜 Six Rounds of Tuning
+## 📜 Seven Rounds of Tuning
 
 | Round | Theme | Key gain |
 |---|---|---|
 | 1 | **Quant selection** (53 → 1) | NVFP4-LOW wins (fastest, quality tied) |
-| 2 | **KV + MTP tuning** | q8_0 KV (+56% capacity) · MTP n-max 3 (+40% generation) |
+| 2 | **KV + MTP tuning** | MTP n-max 3 (+40% generation) |
 | 3 | **Thinking control** | xhigh fixed: `--reasoning-budget` + template injection |
-| 4 | **Self-built engine** | CUDA 13.3 official pairing: prefill 1692 · upstream bug fixed |
-| 5 | **Context breakthrough** | 150K → 180K (`-np 1` frees 1.15 GB of VRAM) |
-| 6 | **Exhaustive re-check** | 40+ params swept; hardware limit confirmed |
+| 4 | **Self-built engine** | CUDA 13.3 official pairing: prefill +13% · upstream bug fixed |
+| 5 | **Context correction (1)** | 150K → 180K (`-np 1` frees 1.15 GB of VRAM) |
+| 6 | **Exhaustive re-check** | 40+ params swept; no stone unturned |
+| 7 | **Context truth (this round)** | **q4_0 KV makes 262K truly usable** (+45% context, faster) · silent-cap & YaRN truths uncovered |
 
 ## 📊 Scoreboard (final config, measured)
 
@@ -438,3 +442,42 @@ NVIDIA, GeForce, RTX and CUDA are trademarks of NVIDIA Corporation. Qwen is a tr
 ## Acknowledgements
 
 **Alibaba / Qwen team** (base model) · **unsloth** (NVFP4 quantization method, dynamic quant family) · **DASLab** (GSQ-RCO academic quantization) · **esatapedico** (NVFP4-MTP GGUF packaging and transparent model cards) · **llama.cpp community** (engine and MTP support)
+
+
+---
+
+## 📚 Complete Data & Docs Index
+
+### Raw measurements (`data/`)
+
+| File | Content |
+|---|---|
+| [final-benchmark.md](data/final-benchmark.md) | **Final config benchmark**: 8-run stability, TTFT curve, vision latency, loaded-context speed |
+| [nmax-3-vs-4-comparison.md](data/nmax-3-vs-4-comparison.md) | **MTP draft-depth rigorous comparison** (interleaved design + acceptance rates + statistics) |
+| [context-scaling-history.md](data/context-scaling-history.md) | **Full context-scaling history**: 88K → 262K, including three conclusions we had to retract |
+| [speed-results.md](data/speed-results.md) | Rounds 1–2: three-way quant duel, MTP sweep, KV experiments |
+| [round2-new-results.md](data/round2-new-results.md) | Round 2 supplementary data |
+| [round3-6-latest.md](data/round3-6-latest.md) | Rounds 3–6 (thinking control / self-build / context / exhaustive sweep) |
+| [thermal-stress-12min-100rounds.txt](data/thermal-stress-12min-100rounds.txt) | Raw 12-minute thermal stress log |
+
+### Technical docs (`docs/`)
+
+| File | Content |
+|---|---|
+| [context-limits-and-yarn.md](docs/context-limits-and-yarn.md) | **262K ceiling / q4_0 breakthrough / YaRN truth / engine comparison** |
+| [windows-self-build-recipe.en.md](docs/windows-self-build-recipe.en.md) | Windows self-build recipe (English; [中文](docs/windows-self-build-recipe.md)) |
+| [custom-build-and-mtp-bug.md](docs/custom-build-and-mtp-bug.md) | Self-build pitfalls + MTP prefill bug root-cause |
+| [reasoning-guide.md](docs/reasoning-guide.md) | Reasoning depth control (the xhigh token-burn problem) |
+| [xhigh-overthinking-fix.md](docs/xhigh-overthinking-fix.md) | Overthinking fix (system prompt + template injection) |
+| [vision-setup.md](docs/vision-setup.md) | Vision setup (mmproj quantization, measured VRAM cost) |
+| [ACKNOWLEDGMENTS.md](docs/ACKNOWLEDGMENTS.md) | **Credits and sources** (third-party data attribution) |
+
+### Tools (`tools/`)
+
+Chart generators and measurement harnesses — every number in this repo is reproducible.
+
+### License & legal
+
+- Code: **MIT** | Documentation & data: **CC BY 4.0** — full text in [LICENSE](LICENSE)
+- Third-party components (model / engine / CUDA) keep their own licenses: see [docs/ACKNOWLEDGMENTS.md](docs/ACKNOWLEDGMENTS.md)
+- **This repository contains no model weights**
