@@ -127,9 +127,10 @@
 
 ---
 
-## 📌 Three Core Findings
+## 📌 Three Core Findings (updated 2026-09-15)
 
-1. **q8_0 KV is the most underrated optimization** — zero speed cost, +56% capacity (212K), near-lossless. Meanwhile q4_0-class KV reaches the full 256K but makes long prompts **28× slower** (kernel fallback) — unusable.
+1. **q4_0 KV is the key to doubling context** — at the same 256K: q8_0 manages only **9.1 tok/s**, q4_0 reaches **87–91**, with recall tested lossless.
+   > *Correction*: an early "q4_0-class KV is 28× slower" result was an artifact of a **mixed type** (`K=q8_0 + V=q4_0`) — **full q4_0 has no such problem**. See [context truth](docs/context-limits-and-yarn.md).
 2. **MTP needs no tuning** — n-max 3 is optimal on a 24GB card (2/3/4/5 and p-min all swept). High acceptance ≠ high speed.
 3. **Engine gains depend on quantization type** — b10840 → b10889 gave NVFP4 +6.6% speed and +48K capacity, but K-quants −11%. **Always re-measure capacity after an engine upgrade.**
 
@@ -145,7 +146,7 @@
 
 | Model | F16 KV ceiling | **q8_0 KV ceiling** | q4_0-class KV |
 |---|---|---|---|
-| IQ3_S | 136K | **212K** (240K extreme) | 256K ⚠️ 28× slower |
+| IQ3_S | 136K | **212K** (240K extreme) | 256K ⚠️ 28× (mixed-type artifact, see notes) |
 | NVFP4-LOW | 96K | **200K** | — |
 | NVFP4-MID-HIGH | 88K | ~160K (est.) | — |
 | UD-Q4_K_S | 96K | 200K | — |
@@ -288,7 +289,7 @@ The model is a VLM; the vision component (mmproj) ships separately and can be **
 ## ⚙️ Eight Reusable Lessons
 
 1. **`reasoning_effort` is mandatory** — the default (xhigh) burned 8,000 tokens of pure thinking with zero output. Pass `{"chat_template_kwargs":{"reasoning_effort":"medium"}}`. A community 4,800-task test: xhigh burns 7–11× more tokens than low for 0–4.7 points. **Never disable reasoning** (NVFP4 collapses to 13/30 on HumanEval+ with reasoning off).
-2. **q4_0-class KV has a hidden performance cliff** — best-looking capacity (256K), 28× slower long prompts.
+2. **q4_0-class KV seemed to have a performance cliff** — *later corrected*: the 28× slowdown was a **mixed-type** (`K=q8_0 + V=q4_0`) artifact. Full q4_0 is the fastest configuration at 256K.
 3. **MTP is pure win on dense models** — n-max 3 gives +73~79% (the "MTP slows MoE down" experience doesn't apply).
 4. **High acceptance ≠ high speed** — speed = per-pass cost × per-pass yield; light heads beat high acceptance.
 5. **NVFP4's FP4 acceleration only shows in prefill** — decode is bandwidth-bound and depends on head design.
@@ -325,7 +326,7 @@ Thinking sampling `temp 1.0 / top_p 0.95 / top_k 20`; instruct sampling `temp 0.
 ## ❓ FAQ
 
 **Q: Why not the full 256K (the model's native maximum)?**
-A: It works, but only with q4_0-class KV, which makes long prompts 28× slower (kernel fallback). 192K + q8_0 is the sweet spot across capacity, speed, and quality.
+A: With **q4_0 KV** (full q4_0, not mixed) it is the fastest configuration we measured at 256K — 87–91 tok/s with lossless recall. *Note: an earlier "28× slower" claim came from a mixed `K=q8_0 + V=q4_0` setup and does not apply to full q4_0.*
 
 **Q: Does q8_0 KV hurt quality?**
 A: Measured and widely reported as near-lossless. Our long-context recall tests (12K/70% and 150K/80% depth) all passed with q8_0 KV.
