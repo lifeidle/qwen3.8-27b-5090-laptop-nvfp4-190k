@@ -12,7 +12,7 @@
 |---|---|
 | Design | **Interleaved ABABAB** (6 blocks: 3,4,3,4,3,4) — cancels thermal/time drift |
 | Samples | **15 per config** (5 runs × 3 blocks), 5 different prompts cycled |
-| Config | 262K context · q4_0 KV · vision ON · self-built CUDA 13.3 |
+| Config | 256K context · q4_0 KV · vision ON · self-built CUDA 13.3 |
 | Metrics | decode tok/s **and** MTP draft acceptance rate (per run) |
 | Second experiment | Same comparison under **loaded context** (122,920 tokens) |
 
